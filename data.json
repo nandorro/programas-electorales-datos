@@ -1,5 +1,5 @@
 {
- "version": 2,
+ "version": 3,
  "updated": "2026-11-05",
  "parties": [
   {
@@ -150,7 +150,11 @@
     "colegio",
     "universid",
     "escuela",
-    "beca"
+    "beca",
+    "profesor",
+    "profesores",
+    "maestro",
+    "fp"
    ]
   },
   {
@@ -183,9 +187,16 @@
     "empleo",
     "trabajo",
     "salario",
+    "sueldo",
+    "sueldos",
     "smi",
     "paro",
-    "jornada"
+    "jornada",
+    "autonomo",
+    "autónomo",
+    "cotizacion",
+    "cotización",
+    "contrato"
    ]
   },
   {
@@ -220,6 +231,62 @@
     "sector público",
     "sector publico",
     "empleado público"
+   ]
+  },
+  {
+   "id": "justicia",
+   "label": "Justicia y corrupción",
+   "kw": [
+    "justicia",
+    "corrupcion",
+    "corrupción",
+    "juez",
+    "jueces",
+    "fiscal",
+    "cgpj",
+    "amnistia",
+    "amnistía",
+    "indulto",
+    "poder judicial",
+    "transparencia"
+   ]
+  },
+  {
+   "id": "igualdad",
+   "label": "Igualdad y violencia de género",
+   "kw": [
+    "igualdad",
+    "machista",
+    "violencia de género",
+    "violencia de genero",
+    "feminis",
+    "mujer",
+    "mujeres",
+    "lgtb",
+    "aborto",
+    "conciliacion",
+    "conciliación"
+   ]
+  },
+  {
+   "id": "exterior",
+   "label": "Política exterior y defensa",
+   "kw": [
+    "exterior",
+    "europa",
+    "ue",
+    "otan",
+    "defensa",
+    "ejercito",
+    "ejército",
+    "ucrania",
+    "israel",
+    "palestina",
+    "gaza",
+    "marruecos",
+    "eeuu",
+    "trump",
+    "gasto militar"
    ]
   }
  ],
@@ -363,6 +430,48 @@
    "PNV": "Función pública vasca propia con competencias plenas, euskera y estabilización del personal interino, manteniendo la calidad del servicio público.",
    "BNG": "Servicios públicos gallegos reforzados, reducción de la temporalidad, defensa del gallego en la Administración y mejora de las condiciones laborales.",
    "CC": "Estabilizar al personal temporal en Canarias y reconocer el sobrecoste de vida insular con complementos o mejoras retributivas del personal público."
+  },
+  "justicia": {
+   "PP": "Despolitizar la justicia y renovar el CGPJ con jueces elegidos por los propios jueces, rechazo de la amnistía y de los indultos a condenados y refuerzo de la independencia judicial. Endurecer la lucha contra la corrupción y reforzar la transparencia.",
+   "PSOE": "Defiende la independencia judicial y la renovación del CGPJ, y plantea reformas para modernizar la justicia y agilizar los procesos. Defiende la amnistía y los indultos como herramientas de convivencia y propone más medidas de transparencia y lucha contra el fraude.",
+   "VOX": "Reforma del CGPJ para que lo elijan los jueces, derogación de la amnistía y endurecimiento de penas por corrupción y reincidencia. Rechaza los indultos políticos y propone mayor control del gasto público.",
+   "SMR": "Reformar la justicia para hacerla más accesible y agilizar los procesos, reforzar la lucha contra la corrupción y la transparencia, y defender los instrumentos de convivencia como la amnistía.",
+   "POD": "Democratizar la justicia, reformar el CGPJ, combatir el 'lawfare' y reforzar la lucha contra la corrupción y los privilegios de los poderosos.",
+   "ERC": "Amnistía plena y fin de la judicialización del conflicto político catalán, con justicia más cercana y en catalán.",
+   "JXC": "Amnistía completa, fin de la persecución judicial de los independentistas y reconocimiento de la justicia catalana propia.",
+   "SALF": "Menos intervención política en la justicia y castigo más duro de la corrupción; contra los privilegios de los cargos públicos.",
+   "BIL": "Reformas de la justicia para evitar la politización, fin de la política penitenciaria de excepción y amnistía como vía de normalización.",
+   "PNV": "Reforma del CGPJ por consenso, respeto a la independencia judicial y a las competencias de los tribunales vascos.",
+   "BNG": "Justicia en gallego, más medios y reformas para evitar la politización de los tribunales.",
+   "CC": "Más medios para los juzgados canarios y mejor funcionamiento de la justicia en las islas."
+  },
+  "igualdad": {
+   "PP": "Lucha contra la violencia de género con más protección a las víctimas, pulseras y medios policiales, y políticas de conciliación y apoyo a la familia y la natalidad. Rechaza el enfoque ideológico y apoya la igualdad de oportunidades.",
+   "PSOE": "Refuerza la política de igualdad y el Pacto de Estado contra la violencia de género, con más protección y recursos. Defiende el aborto como derecho, la igualdad salarial, los permisos de cuidado y los derechos del colectivo LGTBI.",
+   "VOX": "Propone sustituir la ley de violencia de género por una norma de violencia intrafamiliar, rechaza la ideología de género y las cuotas, y apoya la natalidad y la familia tradicional.",
+   "SMR": "Más derechos y recursos para la igualdad, permisos de cuidado iguales e intransferibles, lucha contra la brecha salarial y refuerzo de los derechos LGTBI y de las mujeres.",
+   "POD": "Feminismo y derechos LGTBI como eje: ampliar la ley de igualdad, reforzar la protección ante la violencia machista y garantizar el aborto en la sanidad pública.",
+   "ERC": "Competencias propias en igualdad, protección a las víctimas de violencia machista y derechos LGTBI.",
+   "JXC": "Medidas de igualdad y contra la violencia machista con gestión catalana y conciliación laboral.",
+   "SALF": "Menos intervención del Estado y centrado en la igualdad ante la ley; críticas al gasto de los ministerios de igualdad.",
+   "BIL": "Feminismo y derechos LGTBI, con refuerzo de los recursos contra la violencia machista.",
+   "PNV": "Políticas de igualdad con competencias propias y atención a las víctimas de violencia de género.",
+   "BNG": "Igualdad real, defensa de los derechos de las mujeres y servicios de atención a víctimas en Galicia.",
+   "CC": "Medidas de igualdad y protección frente a la violencia de género adaptadas a la realidad insular."
+  },
+  "exterior": {
+   "PP": "Alinearse con la UE y la OTAN, cumplir el compromiso de gasto en defensa y ser un socio fiable. Defiende apoyo a Ucrania y una política exterior que recupere el peso de España en Europa.",
+   "PSOE": "Compromiso con la UE, apoyo a Ucrania y multilateralismo. Defiende el reconocimiento del Estado palestino y mantiene la pertenencia a la OTAN, con aumento gradual del gasto en defensa.",
+   "VOX": "Prioriza la soberanía nacional, cuestiona parte de las políticas de la UE y reclama más atención a Ceuta, Melilla y Gibraltar, con apoyo a la OTAN y mayor gasto en defensa.",
+   "SMR": "Política exterior pacifista, apoyo al derecho internacional, reconocimiento de Palestina y cuestionamiento del aumento del gasto militar.",
+   "POD": "Salida de la OTAN o freno al gasto militar, apoyo a Palestina, rechazo a la venta de armas a Israel y crítica a la política exterior atlantista.",
+   "ERC": "Europa de los pueblos y defensa del derecho de autodeterminación; contra el gasto militar y por una Cataluña con voz en la UE.",
+   "JXC": "Más presencia de Cataluña en la UE y defensa del derecho de autodeterminación, con política exterior propia.",
+   "SALF": "Menos gasto público exterior y escepticismo ante la burocracia europea, con defensa del libre comercio.",
+   "BIL": "Rechazo al aumento del gasto militar, defensa del derecho de autodeterminación y apoyo a Palestina.",
+   "PNV": "Europeísmo convencido, presencia de Euskadi en la UE y apoyo a una defensa común europea.",
+   "BNG": "Apoyo a la UE con más voz para Galicia, pacifismo y rechazo a la presencia militar de la OTAN.",
+   "CC": "Mayor atención a Canarias como frontera y a las relaciones con el vecindario africano, con apoyo a la UE."
   },
   "seguridad": {
    "PP": "Reforzar plantillas policiales, endurecer penas por reincidencia y desalojo exprés de okupas.",
