@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "updated": "2026-11-05",
  "parties": [
   {
@@ -197,7 +197,29 @@
     "policia",
     "delito",
     "okupa",
-    "ocupa"
+    "ocupa",
+    "robo",
+    "crimen",
+    "guardia civil"
+   ]
+  },
+  {
+   "id": "funcionarios",
+   "label": "Funcionarios",
+   "kw": [
+    "funcionari",
+    "oposicion",
+    "oposición",
+    "empleo público",
+    "empleo publico",
+    "interino",
+    "administración",
+    "administracion",
+    "muface",
+    "plaza",
+    "sector público",
+    "sector publico",
+    "empleado público"
    ]
   }
  ],
@@ -327,6 +349,20 @@
    "PNV": "Marco laboral vasco y diálogo social.",
    "BNG": "Salario propio gallego y mejor protección laboral.",
    "CC": "Más empleo estable en las islas y menor paro juvenil."
+  },
+  "funcionarios": {
+   "PP": "Racionalizar y modernizar la Administración, reducir burocracia y duplicidades, y evaluar el desempeño. Defiende un empleo público estable y de calidad, con acceso por mérito y capacidad, y aboga por reducir la interinidad abusiva con procesos de estabilización. Mantener el modelo de mutualidades como MUFACE.",
+   "PSOE": "Reducir la temporalidad en el empleo público con procesos de estabilización de interinos, mantener el poder adquisitivo de los salarios públicos ligado al IPC y avanzar en teletrabajo y conciliación. Refuerzo de la oferta de empleo público en servicios esenciales (sanidad, educación, dependencia) y continuidad de MUFACE con nuevo concierto.",
+   "VOX": "Adelgazar la estructura administrativa: reducir cargos de confianza, asesores y organismos duplicados entre Estado y autonomías, y recortar el gasto político. Mantener a los funcionarios de carrera y el acceso por mérito, con más evaluación del rendimiento y control del absentismo.",
+   "SMR": "Poner fin a la interinidad en fraude de ley, subir salarios públicos y reducir la jornada a 35 horas. Más plantilla en servicios públicos esenciales y refuerzo de las condiciones laborales del personal de la Administración.",
+   "POD": "Reforzar el empleo público como pilar de los servicios, internalizar servicios hoy externalizados, subir salarios y acabar con la temporalidad. Mejorar derechos laborales y estabilidad de las plantillas.",
+   "ERC": "Competencias propias en función pública y empleo público para Cataluña, con requisitos lingüísticos de catalán. Estabilización del personal temporal y mejora de condiciones.",
+   "JXC": "Función pública catalana propia, con el catalán como requisito, agilización de los procesos selectivos y estabilidad del personal interino.",
+   "SALF": "Reducción drástica del número de organismos y cargos políticos y mayor eficiencia y evaluación del rendimiento; críticas al tamaño de la Administración y al gasto público.",
+   "BIL": "Empleo público estable y de calidad en las instituciones vascas, con el euskera como mérito o requisito. Internalizar servicios externalizados y mejorar las condiciones laborales.",
+   "PNV": "Función pública vasca propia con competencias plenas, euskera y estabilización del personal interino, manteniendo la calidad del servicio público.",
+   "BNG": "Servicios públicos gallegos reforzados, reducción de la temporalidad, defensa del gallego en la Administración y mejora de las condiciones laborales.",
+   "CC": "Estabilizar al personal temporal en Canarias y reconocer el sobrecoste de vida insular con complementos o mejoras retributivas del personal público."
   },
   "seguridad": {
    "PP": "Reforzar plantillas policiales, endurecer penas por reincidencia y desalojo exprés de okupas.",
