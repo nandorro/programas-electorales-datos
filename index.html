@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Programas Electorales</title>
+<meta name="theme-color" content="#1D84CE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Programas">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#1a1c20;--mut:#667}
+@media(prefers-color-scheme:dark){:root{--bg:#14161a;--card:#1f2228;--tx:#eceef2;--mut:#9aa}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx);padding:16px;padding-top:max(16px,env(safe-area-inset-top))}
+h1{font-size:1.3rem;margin:0 0 4px}
+.sub{color:var(--mut);font-size:.85rem;margin-bottom:16px}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px #0002}
+input[type=range]{width:100%}
+.big{font-size:2.4rem;font-weight:700;text-align:center}
+button{font:inherit;cursor:pointer}
+.go{width:100%;padding:14px;border:0;border-radius:12px;background:#1D84CE;color:#fff;font-weight:600;margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 12px;border-radius:20px;border:1px solid #8886;background:transparent;color:var(--tx)}
+.chip.on{background:#1a1c20;color:#fff;border-color:#1a1c20}
+@media(prefers-color-scheme:dark){.chip.on{background:#eceef2;color:#14161a}}
+.q{display:flex;gap:8px;margin-top:10px}
+.q input{flex:1;padding:12px;border-radius:10px;border:1px solid #8886;background:var(--bg);color:var(--tx);font:inherit}
+.q button{padding:0 16px;border:0;border-radius:10px;background:#1D84CE;color:#fff}
+.parties{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.p{border:3px solid transparent;border-radius:12px;padding:14px 4px;font-weight:700;font-size:1rem;opacity:.45;transition:.15s}
+.p.on{opacity:1;border-color:var(--tx);transform:scale(1.04)}
+.p.all{background:#333;color:#fff}
+.ans{border-left:8px solid;border-radius:10px;padding:12px;margin-bottom:10px;background:var(--bg)}
+.ans b{display:block;margin-bottom:4px}
+.link{background:none;border:0;color:#1D84CE;padding:0;margin-top:6px}
+.note{font-size:.75rem;color:var(--mut)}
+.hide{display:none}
+.rel{margin-top:8px;font-size:.92rem}
+.quote{margin:8px 0;padding:8px 10px;border-left:3px solid #8886;font-size:.9rem;background:#8881;border-radius:0 8px 8px 0}
+.quote small{display:block;color:var(--mut);margin-bottom:2px}
+.sync{width:100%;padding:12px;border:0;border-radius:12px;background:#2e7d32;color:#fff;font-weight:600}
+.sync[disabled]{opacity:.6}
+#synclog{font-size:.8rem;color:var(--mut);white-space:pre-wrap;margin-top:8px;max-height:220px;overflow:auto}
+.lbl{font-size:.75rem;font-weight:600;color:var(--mut);margin:8px 0 2px;display:block}.badge{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.badge.prog{background:#2e7d32;color:#fff}.badge.res{background:#f9a825;color:#000}
+</style>
+</head>
+<body>
+<h1>🗳️ Programas Electorales</h1>
+<div class="sub">Elecciones generales de España</div>
+
+<section id="setup" class="card">
+  <p><b>¿Cuántos partidos quieres ver?</b><br><span class="note">Se ordenan por intención de voto media según las encuestas más recientes.</span></p>
+  <div class="big" id="num">5</div>
+  <input id="range" type="range" min="1" max="12" value="5">
+  <button class="go" id="start">Continuar</button>
+</section>
+
+<section id="main" class="hide">
+  <div class="card">
+    <b>1. Elige o escribe tu pregunta</b>
+    <div class="chips" id="topics" style="margin-top:10px"></div>
+    <div class="q"><input id="free" placeholder="Ej.: ¿Qué harán con los funcionarios interinos?"><button id="ask">Ir</button></div>
+    <div id="curq" class="note" style="margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <b>2. Pulsa los partidos</b>
+    <div class="parties" id="parties" style="margin-top:10px"></div>
+    <button class="link" id="change">Cambiar nº de partidos</button>
+  </div>
+  <div class="card">
+    <b>Datos y programas</b>
+    <p class="note" style="margin:6px 0">Busca los programas electorales en las webs de los partidos, los descarga al móvil y los guarda para usarlos sin conexión. Si cambian, los vuelve a descargar.</p>
+    <button class="sync" id="sync">🔄 Actualizar datos y programas</button>
+    <div id="synclog"></div>
+    <div id="progs" class="note" style="margin-top:6px"></div>
+  </div>
+  <div class="card">
+    <b>3. Respuestas</b>
+    <div id="answers" style="margin-top:10px"></div>
+  </div>
+  <p class="note" id="upd"></p>
+  <p class="note">Resúmenes orientativos de las líneas generales de cada programa. Consulta siempre la web oficial de cada partido. El orden usa una media aproximada de encuestas publicadas en octubre de 2026 (Sigma Dos, El Confidencial, EM-Analytics).</p>
+</section>
+
+<script src="data.js"></script>
+<script src="programas.js"></script>
+<script>
+let shown = [], selected = new Set(), topic = null;
+const $ = id => document.getElementById(id);
+const range = $("range");
+range.oninput = () => $("num").textContent = range.value;
+
+$("start").onclick = () => {
+  const n = +range.value;
+  shown = [...PARTIES].sort((a,b)=>b.poll-a.poll).slice(0,n);
+  selected = new Set();
+  $("setup").classList.add("hide"); $("main").classList.remove("hide");
+  renderParties(); renderAnswers();
+};
+$("change").onclick = () => { $("main").classList.add("hide"); $("setup").classList.remove("hide"); };
+
+function renderTopics(){
+  $("topics").innerHTML = "";
+  TOPICS.forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip" + (topic===t.id?" on":""); b.textContent = t.label;
+    b.onclick = () => setTopic(t.id);
+    $("topics").appendChild(b);
+  });
+}
+const STOP=new Set("que qué como cómo cual cuál los las del con por para una uno unos unas sus sobre hacen hara haran hará harán piensa piensan opina quiere quieren van sera será han hay esta este estos son".split(" "));
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9ñ ]/g," ");
+const stem=w=>w.slice(0,5);
+let query="", relTopics=[], qTokens=[], qFree=false;
+function setTopic(id,q){
+  topic=id; query=q||""; relTopics=[]; qFree=!!q;
+  const tt=TOPICS.find(x=>x.id===id);
+  qTokens=q?PE.tokensOf(q):[...new Set(tt.kw.flatMap(k=>PE.tokensOf(k)).concat(PE.tokensOf(tt.label)))];
+  const t=TOPICS.find(x=>x.id===id);
+  $("curq").textContent=t?(q?"Mejor coincidencia: ":"Tema: ")+t.label:"";
+  renderTopics(); renderAnswers();
+}
+function analyze(q){
+  const toks=norm(q).split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)).map(stem);
+  if(!toks.length)return[];
+  return TOPICS.map(t=>{
+    let sc=0;
+    const kws=t.kw.map(k=>norm(k));
+    const lab=norm(t.label);
+    toks.forEach(w=>{
+      if(kws.some(k=>k.split(" ").some(x=>stem(x)===w)))sc+=4;
+      if(lab.split(" ").some(x=>stem(x)===w))sc+=3;
+      let hits=0;
+      PARTIES.forEach(p=>{const a=ANSWERS[t.id]&&ANSWERS[t.id][p.id];if(a&&norm(a).includes(w))hits++});
+      sc+=Math.min(hits,6)*0.5;
+    });
+    return{id:t.id,sc};
+  }).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc);
+}
+$("ask").onclick=()=>{
+  const q=$("free").value.trim(); if(!q)return;
+  const r=analyze(q);
+  if(!r.length||r[0].sc<1.5){topic=null;$("curq").textContent="No he encontrado información sobre eso. Prueba con: "+TOPICS.map(t=>t.label).join(", ")+".";renderTopics();renderAnswers();return}
+  setTopic(r[0].id,q);
+  relTopics=r.slice(1,4).filter(x=>x.sc>=Math.max(2,r[0].sc*0.35)).map(x=>x.id);
+  const names=relTopics.map(id=>TOPICS.find(t=>t.id===id).label);
+  $("curq").textContent="Mejor coincidencia: "+TOPICS.find(t=>t.id===r[0].id).label+(names.length?" · También relacionado: "+names.join(", "):"");
+  renderAnswers();
+};
+$("free").onkeydown=e=>{if(e.key==="Enter")$("ask").click()};
+
+function renderParties(){
+  const box = $("parties"); box.innerHTML = "";
+  const all = document.createElement("button");
+  all.className = "p all" + (selected.size===shown.length && shown.length ? " on":""); all.textContent = "ALL";
+  all.onclick = () => {
+    if (selected.size===shown.length) selected.clear(); else shown.forEach(p=>selected.add(p.id));
+    renderParties(); renderAnswers();
+  };
+  box.appendChild(all);
+  shown.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "p" + (selected.has(p.id)?" on":"");
+    b.style.background = p.color; b.style.color = p.text; b.textContent = p.id;
+    b.title = p.name;
+    b.onclick = () => { selected.has(p.id) ? selected.delete(p.id) : selected.add(p.id); renderParties(); renderAnswers(); };
+    box.appendChild(b);
+  });
+}
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+function tl(id){return TOPICS.find(t=>t.id===id).label}
+function passages(pid){
+  const pr=PE.PROGS[pid]; if(!pr||!qTokens.length)return[];
+  return PE.search(pr,qTokens,3,qFree?{}:{need:1,minSc:4});
+}
+function quote(x){return `<div class="quote"><small>Programa oficial · pág. ${x.p}</small>«${esc(x.t)}»</div>`}
+function renderAnswers(){
+  const box=$("answers");
+  if(!topic){box.innerHTML='<span class="note">Elige un tema o escribe una pregunta y pulsa Ir.</span>';return}
+  const list=shown.filter(p=>selected.has(p.id));
+  if(!list.length){box.innerHTML='<span class="note">Pulsa uno o varios partidos (o ALL).</span>';return}
+  box.innerHTML=list.map(p=>{
+    const main=ANSWERS[topic][p.id];
+    const ps=passages(p.id);
+    const rel=relTopics.filter(t=>ANSWERS[t]&&ANSWERS[t][p.id]);
+    const first=rel[0], more=rel.slice(1);
+    let inline="";
+    if(ps.length)inline+=`<span class="lbl">📄 Lo que dice su programa</span>`+quote(ps[0])+`<span class="lbl">Resumen general</span>`;
+    inline+=esc(main);
+    if(first)inline+=`<div class="rel"><i>También, sobre ${tl(first)}:</i> ${esc(ANSWERS[first][p.id])}</div>`;
+    let hidden="";
+    ps.slice(1).forEach(x=>hidden+=quote(x));
+    more.forEach(t=>hidden+=`<div class="rel"><i>Sobre ${tl(t)}:</i> ${esc(ANSWERS[t][p.id])}</div>`);
+    if(PROGRAM_URLS[p.id])hidden+=`<a class="link" href="${PROGRAM_URLS[p.id]}" target="_blank">Ver programa oficial (PDF)</a>`;
+    const long=main.length>260&&!first&&!ps.length;
+    const shortTxt=long?esc(main.slice(0,230).replace(/\s+\S*$/,""))+"…":inline;
+    const tail=long?`<span class="full hide">${inline}</span>`:"";
+    const hasMore=long||hidden;
+    return `<div class="ans" style="border-color:${p.color}"><b>${p.id} · ${p.name}${badge(p.id)}</b><span class="short">${shortTxt}</span>${tail}<div class="hid hide">${hidden}</div>${hasMore?`<button class="link" onclick="toggleMore(this)">Leer más</button>`:""}</div>`;
+  }).join("");
+}
+function toggleMore(btn){
+  const a=btn.parentElement, open=btn.textContent==="Leer más";
+  const f=a.querySelector(".full"), s=a.querySelector(".short");
+  if(f){f.classList.toggle("hide",!open);s.classList.toggle("hide",open)}
+  a.querySelector(".hid").classList.toggle("hide",!open);
+  btn.textContent=open?"Leer menos":"Leer más";
+}
+function badge(id){return (SOURCE_STATUS[id]==="programa"||PE.PROGS[id])?'<span class="badge prog">Programa oficial</span>':'<span class="badge res">Resumen provisional</span>'}
+const CK="pe_cache_v1";
+function applyData(d){
+  if(d.parties)PARTIES=d.parties; if(d.topics)TOPICS=d.topics; if(d.answers)ANSWERS=d.answers;
+  Object.assign(SOURCE_STATUS,d.status||{}); Object.assign(PROGRAM_URLS,d.programUrls||{}); Object.assign(PROGRAM_PAGES,d.programPages||{});
+}
+async function updateData(){
+  const u=$("upd");
+  try{const c=JSON.parse(localStorage.getItem(CK)||"null"); if(c&&c.version>DATA_VERSION){applyData(c);u.textContent="Datos del "+c.updated+" (guardados)."}}catch(e){}
+  if(!REMOTE_URL){return}
+  try{
+    const ctl=new AbortController(); setTimeout(()=>ctl.abort(),8000);
+    const r=await fetch(REMOTE_URL+"?t="+Date.now(),{signal:ctl.signal}); if(!r.ok)throw 0;
+    const d=await r.json();
+    const cur=(()=>{try{return JSON.parse(localStorage.getItem(CK)).version}catch(e){return DATA_VERSION}})();
+    if(d.version>cur){localStorage.setItem(CK,JSON.stringify(d));applyData(d);u.textContent="✅ Datos actualizados ("+d.updated+")."}
+    else u.textContent="Datos al día ("+(d.updated||"")+").";
+    if(!$("setup").classList.contains("hide")){} else {shown=[...PARTIES].sort((a,b)=>b.poll-a.poll).slice(0,shown.length);renderTopics();renderParties();renderAnswers()}
+  }catch(e){u.textContent+=(u.textContent?" ":"")+"Sin conexión: se usan los datos guardados."}
+}
+function showProgs(){
+  const ids=Object.keys(PE.PROGS);
+  $("progs").textContent=ids.length?"📚 En el móvil: "+ids.map(i=>`${i} (${PE.PROGS[i].pages} págs., ${PE.PROGS[i].updated})`).join(" · "):"Aún no hay programas descargados en el móvil.";
+}
+let syncing=false;
+$("sync").onclick=async()=>{
+  if(syncing)return; syncing=true;
+  const btn=$("sync"), log=$("synclog"); btn.disabled=true; btn.textContent="Actualizando…"; log.textContent="";
+  let lines=[];
+  const say=(m,replace)=>{ if(replace&&lines.length)lines[lines.length-1]=m; else lines.push(m); log.textContent=lines.join("\n"); log.scrollTop=log.scrollHeight; };
+  try{
+    say("Comprobando datos…"); await updateData(); say("Datos: "+($("upd").textContent||"ok"),true);
+    let n={new:0,updated:0,same:0,none:0,err:0};
+    for(const p of PARTIES){
+      try{ const r=await PE.syncParty(p,PROGRAM_URLS,PROGRAM_PAGES,say); n[r]++; }
+      catch(e){ n.err++; say(`${p.id}: ⚠️ error (${e&&e.message||e})`); }
+    }
+    say(`\nListo: ${n.new} nuevos, ${n.updated} actualizados, ${n.same} sin cambios, ${n.none} sin publicar${n.err?`, ${n.err} con error`:""}.`);
+  }catch(e){ say("Error: "+(e&&e.message||e)); }
+  syncing=false; btn.disabled=false; btn.textContent="🔄 Actualizar datos y programas";
+  showProgs(); renderAnswers();
+};
+if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&!PE.NATIVE){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+renderTopics();
+PE.load().then(()=>{showProgs();renderAnswers()});
+updateData();
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+// Partidos ordenados por intención de voto media (encuestas oct-2026: Sigma Dos, El Confidencial, EM-Analytics...).
+// Los resúmenes son orientativos, basados en las líneas generales de cada programa. Verifica en la web oficial del partido.
+let PARTIES = [
+  { id: "PP", name: "Partido Popular", color: "#1D84CE", text: "#fff", poll: 30 },
+  { id: "PSOE", name: "Partido Socialista Obrero Español", color: "#E30613", text: "#fff", poll: 26.5 },
+  { id: "VOX", name: "Vox", color: "#63BE21", text: "#fff", poll: 19.5 },
+  { id: "SMR", name: "Sumar", color: "#E5007D", text: "#fff", poll: 6.5 },
+  { id: "POD", name: "Podemos", color: "#6B2C91", text: "#fff", poll: 3.5 },
+  { id: "ERC", name: "Esquerra Republicana", color: "#FFB232", text: "#000", poll: 2.2 },
+  { id: "JXC", name: "Junts per Catalunya", color: "#00C3B2", text: "#000", poll: 1.8 },
+  { id: "SALF", name: "Se Acabó La Fiesta", color: "#FF6A00", text: "#fff", poll: 3 },
+  { id: "BIL", name: "EH Bildu", color: "#B5CF18", text: "#000", poll: 1.3 },
+  { id: "PNV", name: "Partido Nacionalista Vasco", color: "#008C43", text: "#fff", poll: 1.1 },
+  { id: "BNG", name: "Bloque Nacionalista Galego", color: "#6CB4E4", text: "#000", poll: 0.7 },
+  { id: "CC", name: "Coalición Canaria", color: "#FFD500", text: "#000", poll: 0.5 }
+];
+
+let TOPICS = [
+  { id: "vivienda", label: "Vivienda", kw: ["vivienda","alquiler","hipoteca","casa","piso"] },
+  { id: "sanidad", label: "Sanidad", kw: ["sanidad","salud","hospital","médic","medic","listas de espera"] },
+  { id: "impuestos", label: "Impuestos", kw: ["impuesto","irpf","fiscal","tasa","iva","patrimonio"] },
+  { id: "inmigracion", label: "Inmigración", kw: ["inmigra","migra","frontera","extranjer"] },
+  { id: "pensiones", label: "Pensiones", kw: ["pension","pensión","jubila"] },
+  { id: "educacion", label: "Educación", kw: ["educa","colegio","universid","escuela","beca","profesor","profesores","maestro","fp"] },
+  { id: "energia", label: "Energía y clima", kw: ["energ","clima","nuclear","renovable","luz"] },
+  { id: "territorio", label: "Modelo territorial", kw: ["catalu","independ","autonom","territor","euskadi","galicia"] },
+  { id: "empleo", label: "Empleo y salario", kw: ["empleo","trabajo","salario","sueldo","sueldos","smi","paro","jornada","autonomo","autónomo","cotizacion","cotización","contrato"] },
+  { id: "seguridad", label: "Seguridad", kw: ["segurid","policía","policia","delito","okupa","ocupa","robo","crimen","guardia civil"] },
+  { id: "funcionarios", label: "Funcionarios", kw: ["funcionari","oposicion","oposición","empleo público","empleo publico","interino","administración","administracion","muface","plaza","sector público","sector publico","empleado público"] },
+  { id: "justicia", label: "Justicia y corrupción", kw: ["justicia","corrupcion","corrupción","juez","jueces","fiscal","cgpj","amnistia","amnistía","indulto","poder judicial","transparencia"] },
+  { id: "igualdad", label: "Igualdad y violencia de género", kw: ["igualdad","machista","violencia de género","violencia de genero","feminis","mujer","mujeres","lgtb","aborto","conciliacion","conciliación"] },
+  { id: "exterior", label: "Política exterior y defensa", kw: ["exterior","europa","ue","otan","defensa","ejercito","ejército","ucrania","israel","palestina","gaza","marruecos","eeuu","trump","gasto militar"] }
+];
+
+let ANSWERS = {
+  vivienda: {
+    PP: "Liberalizar suelo, agilizar licencias y dar seguridad jurídica al propietario; ayudas e avales para jóvenes. Rechaza topar alquileres.",
+    PSOE: "Más vivienda pública y asequible (SEPES/Casa 47), limitar subidas de alquiler en zonas tensionadas y gravar especulación.",
+    VOX: "Liberar suelo, reducir trabas urbanísticas, priorizar a españoles en vivienda social y combatir la ocupación.",
+    SMR: "Regular y bajar alquileres, ampliar parque público y limitar la compra especulativa y los pisos turísticos.",
+    POD: "Bajar los alquileres un 40 %, prohibir desahucios sin alternativa y expropiar viviendas vacías de grandes tenedores.",
+    ERC: "Mayor competencia autonómica en vivienda, regulación de alquileres y parque público propio.",
+    JXC: "Más suelo y agilidad administrativa, incentivos a la oferta y competencias plenas para Cataluña.",
+    SALF: "Menos regulación y menos impuestos a la construcción para aumentar la oferta; contrario al control de precios.",
+    BIL: "Vivienda como derecho, control de alquileres y limitación de segundas residencias y pisos turísticos.",
+    PNV: "Impulsar vivienda protegida y alquiler asequible desde las competencias vascas.",
+    BNG: "Parque público de alquiler y medidas contra la especulación y las viviendas turísticas.",
+    CC: "Plan de vivienda para Canarias y limitar el alquiler vacacional ante la presión sobre los residentes."
+  },
+  sanidad: {
+    PP: "Reducir listas de espera con gestión y colaboración público-privada; reforzar la Atención Primaria y el Estatuto Marco.",
+    PSOE: "Reforzar la sanidad pública universal, financiación de Atención Primaria y reducción de listas de espera.",
+    VOX: "Sanidad pública eficiente, fin de la atención gratuita a inmigrantes irregulares y más peso a la gestión.",
+    SMR: "Blindar la sanidad pública, aumentar presupuesto y salud mental/dental incluidas en la cartera pública.",
+    POD: "Sanidad 100 % pública, subir inversión y eliminar conciertos con la privada.",
+    ERC: "Gestión catalana plena y más financiación para el sistema de salud.",
+    JXC: "Mejorar el sistema catalán con más financiación y gestión propia.",
+    SALF: "Reducir burocracia y gasto ineficiente, con más libertad de elección entre público y privado.",
+    BIL: "Sistema público vasco reforzado y mejores condiciones para el personal sanitario.",
+    PNV: "Mantener y reforzar Osakidetza con competencias propias.",
+    BNG: "Reforzar el Sergas público y la Atención Primaria, reducir listas de espera.",
+    CC: "Más recursos para la sanidad canaria y reducción de las listas de espera."
+  },
+  impuestos: {
+    PP: "Bajada de IRPF en tramos bajos y medios, deflactación y rechazo a nuevas subidas; reducir el impuesto de sucesiones.",
+    PSOE: "Fiscalidad progresiva: gravar grandes patrimonios y beneficios de banca y energéticas; proteger rentas medias y bajas.",
+    VOX: "Bajar IRPF y Sociedades, eliminar Patrimonio y Sucesiones y reducir drásticamente el gasto político.",
+    SMR: "Reforma fiscal progresiva, impuesto a grandes fortunas y mayor lucha contra el fraude.",
+    POD: "Impuestos más altos a grandes fortunas y empresas, y más recaudación para servicios públicos.",
+    ERC: "Fiscalidad propia y financiación singular para Cataluña, con un sistema más progresivo.",
+    JXC: "Concierto económico/financiación propia y bajar la carga fiscal a empresas y familias.",
+    SALF: "Reducción radical de impuestos y gasto público; simplificación fiscal.",
+    BIL: "Fiscalidad progresiva y soberanía fiscal para Euskal Herria.",
+    PNV: "Defensa del Concierto Económico y fiscalidad estable para empresas.",
+    BNG: "Más justicia fiscal y financiación justa para Galicia.",
+    CC: "Defensa del Régimen Económico y Fiscal canario y su ventaja diferencial."
+  },
+  inmigracion: {
+    PP: "Inmigración legal y ordenada vinculada al empleo; más control de fronteras y reparto de menores con financiación.",
+    PSOE: "Migración regulada, vías legales, cooperación con países de origen y reparto solidario de menores.",
+    VOX: "Cierre de fronteras, deportación de inmigrantes irregulares y prioridad nacional en ayudas.",
+    SMR: "Regularización extraordinaria, vías seguras y derechos para las personas migrantes.",
+    POD: "Regularización masiva y rechazo a las devoluciones en caliente.",
+    ERC: "Competencias en acogida e integración y política migratoria humanitaria.",
+    JXC: "Competencias en inmigración para Cataluña y exigencia de integración (idioma).",
+    SALF: "Control de la inmigración irregular y limitación del acceso a ayudas públicas.",
+    BIL: "Acogida con derechos, rechazo a los CIE y gestión compartida.",
+    PNV: "Integración y acogida compartida, con competencias propias en gestión.",
+    BNG: "Acogida digna y reparto equitativo de la responsabilidad entre territorios.",
+    CC: "Exige apoyo del Estado y de la UE para Canarias como frontera sur y reparto de menores."
+  },
+  pensiones: {
+    PP: "Garantizar las pensiones con revalorización según IPC y sostenibilidad; incentivar planes de empleo.",
+    PSOE: "Mantener la revalorización con el IPC, mecanismo de equidad intergeneracional y reforzar el sistema público.",
+    VOX: "Garantizar pensiones y priorizar a los españoles; reducir el gasto superfluo para sostenerlas.",
+    SMR: "Subir pensiones mínimas, blindar la revalorización y financiar con más cotizaciones.",
+    POD: "Pensiones dignas con subida de mínimas y rechazo a elevar la edad de jubilación.",
+    ERC: "Mejorar pensiones mínimas y no discriminar a quienes cotizan menos.",
+    JXC: "Sostenibilidad del sistema con mayor participación de la economía productiva.",
+    SALF: "Reformar hacia un sistema de capitalización parcial, con mayor libertad individual.",
+    BIL: "Pensión mínima de 1.080 € (referencia vasca) y reforzar el sistema público.",
+    PNV: "Defender un sistema sostenible con competencias propias en la Seguridad Social.",
+    BNG: "Subir pensiones mínimas, sobre todo las bajas en Galicia.",
+    CC: "Pensiones dignas y ajustes por el mayor coste de vida en Canarias."
+  },
+  educacion: {
+    PP: "Libertad de elección de centro, refuerzo del castellano y rigor académico; más FP y becas por rendimiento.",
+    PSOE: "Educación pública de calidad, becas, gratuidad de 0-3 años y refuerzo del profesorado.",
+    VOX: "Libertad de elección (cheque escolar), fin del adoctrinamiento y castellano como lengua vehicular.",
+    SMR: "Reforzar la escuela pública, ratios menores y universidad accesible.",
+    POD: "Escuela pública y laica, gratuidad universitaria y eliminar conciertos.",
+    ERC: "Escuela en catalán y competencias educativas plenas.",
+    JXC: "Defender la inmersión lingüística y competencias plenas.",
+    SALF: "Más libertad educativa y menos burocracia; competencia entre centros.",
+    BIL: "Educación pública vasca, euskera y gratuidad universitaria.",
+    PNV: "Modelo educativo vasco propio y euskera como pilar.",
+    BNG: "Escuela pública gallega con presencia garantizada del gallego.",
+    CC: "Más inversión y mayor igualdad de oportunidades en las islas."
+  },
+  energia: {
+    PP: "Mix energético con nuclear incluida, rebajar impuestos en la factura y apoyo a renovables y redes.",
+    PSOE: "Transición ecológica, cierre nuclear escalonado y fuerte impulso a renovables y almacenamiento.",
+    VOX: "Rechazo al «fanatismo climático»: mantener nuclear, gas y carbón; bajar impuestos energéticos.",
+    SMR: "Aceleración renovable, descarbonización y energía como bien público.",
+    POD: "Nacionalizar partes del sector eléctrico y acelerar renovables.",
+    ERC: "Transición energética con autonomía y renovables a pequeña escala.",
+    JXC: "Energía asequible y competitiva con mix diversificado y gestión propia.",
+    SALF: "Menos regulación y menos impuestos a la energía, con libre mercado.",
+    BIL: "Renovables comunitarias y rechazo a macroproyectos.",
+    PNV: "Transición con industria vasca y renovables.",
+    BNG: "Renovables con control local y rechazo a macroproyectos eólicos.",
+    CC: "Renovables con almacenamiento para islas aisladas."
+  },
+  territorio: {
+    PP: "Defensa de la unidad de España y la Constitución, igualdad entre españoles y fin de privilegios fiscales.",
+    PSOE: "Diálogo y convivencia dentro de la Constitución, con autogobierno reforzado y financiación autonómica.",
+    VOX: "Suprimir o recentralizar las autonomías y prohibir partidos independentistas.",
+    SMR: "Estado plurinacional, diálogo y financiación autonómica justa.",
+    POD: "Estado plurinacional y derecho a decidir mediante acuerdo.",
+    ERC: "Referéndum de autodeterminación pactado y financiación singular.",
+    JXC: "Independencia de Cataluña y autonomía fiscal plena.",
+    SALF: "Reducir la estructura autonómica y los gastos políticos.",
+    BIL: "Soberanía de Euskal Herria y el derecho a decidir.",
+    PNV: "Reconocimiento nacional de Euskadi y blindaje del autogobierno.",
+    BNG: "Soberanía y defensa de la identidad de Galicia.",
+    CC: "Reconocimiento de la singularidad canaria y trato fiscal propio."
+  },
+  empleo: {
+    PP: "Menos cotizaciones para crear empleo, flexibilidad laboral y reducción de trabas a autónomos.",
+    PSOE: "Subir el SMI, reducir la jornada a 37,5 h y reforzar la reforma laboral y la estabilidad.",
+    VOX: "Bajar cotizaciones a autónomos y empresas, menos burocracia y priorizar a los españoles.",
+    SMR: "Reducción de jornada a 37,5 h, subida del SMI y refuerzo de la inspección laboral.",
+    POD: "Jornada de 32 horas, SMI más alto y derogar los restos de reformas laborales anteriores.",
+    ERC: "Mejorar el SMI y adaptar la política laboral a Cataluña.",
+    JXC: "Competencias laborales plenas y apoyo a pymes y autónomos.",
+    SALF: "Flexibilidad, bajadas de cotizaciones y libertad contractual.",
+    BIL: "SMI propio vasco y mejora de condiciones laborales.",
+    PNV: "Marco laboral vasco y diálogo social.",
+    BNG: "Salario propio gallego y mejor protección laboral.",
+    CC: "Más empleo estable en las islas y menor paro juvenil."
+  },
+  funcionarios: {
+    PP: "Racionalizar y modernizar la Administración, reducir burocracia y duplicidades, y evaluar el desempeño. Defiende un empleo público estable y de calidad, con acceso por mérito y capacidad, y aboga por reducir la interinidad abusiva con procesos de estabilización. Mantener el modelo de mutualidades como MUFACE.",
+    PSOE: "Reducir la temporalidad en el empleo público con procesos de estabilización de interinos, mantener el poder adquisitivo de los salarios públicos ligado al IPC y avanzar en teletrabajo y conciliación. Refuerzo de la oferta de empleo público en servicios esenciales (sanidad, educación, dependencia) y continuidad de MUFACE con nuevo concierto.",
+    VOX: "Adelgazar la estructura administrativa: reducir cargos de confianza, asesores y organismos duplicados entre Estado y autonomías, y recortar el gasto político. Mantener a los funcionarios de carrera y el acceso por mérito, con más evaluación del rendimiento y control del absentismo.",
+    SMR: "Poner fin a la interinidad en fraude de ley, subir salarios públicos y reducir la jornada a 35 horas. Más plantilla en servicios públicos esenciales y refuerzo de las condiciones laborales del personal de la Administración.",
+    POD: "Reforzar el empleo público como pilar de los servicios, internalizar servicios hoy externalizados, subir salarios y acabar con la temporalidad. Mejorar derechos laborales y estabilidad de las plantillas.",
+    ERC: "Competencias propias en función pública y empleo público para Cataluña, con requisitos lingüísticos de catalán. Estabilización del personal temporal y mejora de condiciones.",
+    JXC: "Función pública catalana propia, con el catalán como requisito, agilización de los procesos selectivos y estabilidad del personal interino.",
+    SALF: "Reducción drástica del número de organismos y cargos políticos y mayor eficiencia y evaluación del rendimiento; críticas al tamaño de la Administración y al gasto público.",
+    BIL: "Empleo público estable y de calidad en las instituciones vascas, con el euskera como mérito o requisito. Internalizar servicios externalizados y mejorar las condiciones laborales.",
+    PNV: "Función pública vasca propia con competencias plenas, euskera y estabilización del personal interino, manteniendo la calidad del servicio público.",
+    BNG: "Servicios públicos gallegos reforzados, reducción de la temporalidad, defensa del gallego en la Administración y mejora de las condiciones laborales.",
+    CC: "Estabilizar al personal temporal en Canarias y reconocer el sobrecoste de vida insular con complementos o mejoras retributivas del personal público."
+  },
+  justicia: {
+    PP: "Despolitizar la justicia y renovar el CGPJ con jueces elegidos por los propios jueces, rechazo de la amnistía y de los indultos a condenados y refuerzo de la independencia judicial. Endurecer la lucha contra la corrupción y reforzar la transparencia.",
+    PSOE: "Defiende la independencia judicial y la renovación del CGPJ, y plantea reformas para modernizar la justicia y agilizar los procesos. Defiende la amnistía y los indultos como herramientas de convivencia y propone más medidas de transparencia y lucha contra el fraude.",
+    VOX: "Reforma del CGPJ para que lo elijan los jueces, derogación de la amnistía y endurecimiento de penas por corrupción y reincidencia. Rechaza los indultos políticos y propone mayor control del gasto público.",
+    SMR: "Reformar la justicia para hacerla más accesible y agilizar los procesos, reforzar la lucha contra la corrupción y la transparencia, y defender los instrumentos de convivencia como la amnistía.",
+    POD: "Democratizar la justicia, reformar el CGPJ, combatir el 'lawfare' y reforzar la lucha contra la corrupción y los privilegios de los poderosos.",
+    ERC: "Amnistía plena y fin de la judicialización del conflicto político catalán, con justicia más cercana y en catalán.",
+    JXC: "Amnistía completa, fin de la persecución judicial de los independentistas y reconocimiento de la justicia catalana propia.",
+    SALF: "Menos intervención política en la justicia y castigo más duro de la corrupción; contra los privilegios de los cargos públicos.",
+    BIL: "Reformas de la justicia para evitar la politización, fin de la política penitenciaria de excepción y amnistía como vía de normalización.",
+    PNV: "Reforma del CGPJ por consenso, respeto a la independencia judicial y a las competencias de los tribunales vascos.",
+    BNG: "Justicia en gallego, más medios y reformas para evitar la politización de los tribunales.",
+    CC: "Más medios para los juzgados canarios y mejor funcionamiento de la justicia en las islas."
+  },
+  igualdad: {
+    PP: "Lucha contra la violencia de género con más protección a las víctimas, pulseras y medios policiales, y políticas de conciliación y apoyo a la familia y la natalidad. Rechaza el enfoque ideológico y apoya la igualdad de oportunidades.",
+    PSOE: "Refuerza la política de igualdad y el Pacto de Estado contra la violencia de género, con más protección y recursos. Defiende el aborto como derecho, la igualdad salarial, los permisos de cuidado y los derechos del colectivo LGTBI.",
+    VOX: "Propone sustituir la ley de violencia de género por una norma de violencia intrafamiliar, rechaza la ideología de género y las cuotas, y apoya la natalidad y la familia tradicional.",
+    SMR: "Más derechos y recursos para la igualdad, permisos de cuidado iguales e intransferibles, lucha contra la brecha salarial y refuerzo de los derechos LGTBI y de las mujeres.",
+    POD: "Feminismo y derechos LGTBI como eje: ampliar la ley de igualdad, reforzar la protección ante la violencia machista y garantizar el aborto en la sanidad pública.",
+    ERC: "Competencias propias en igualdad, protección a las víctimas de violencia machista y derechos LGTBI.",
+    JXC: "Medidas de igualdad y contra la violencia machista con gestión catalana y conciliación laboral.",
+    SALF: "Menos intervención del Estado y centrado en la igualdad ante la ley; críticas al gasto de los ministerios de igualdad.",
+    BIL: "Feminismo y derechos LGTBI, con refuerzo de los recursos contra la violencia machista.",
+    PNV: "Políticas de igualdad con competencias propias y atención a las víctimas de violencia de género.",
+    BNG: "Igualdad real, defensa de los derechos de las mujeres y servicios de atención a víctimas en Galicia.",
+    CC: "Medidas de igualdad y protección frente a la violencia de género adaptadas a la realidad insular."
+  },
+  exterior: {
+    PP: "Alinearse con la UE y la OTAN, cumplir el compromiso de gasto en defensa y ser un socio fiable. Defiende apoyo a Ucrania y una política exterior que recupere el peso de España en Europa.",
+    PSOE: "Compromiso con la UE, apoyo a Ucrania y multilateralismo. Defiende el reconocimiento del Estado palestino y mantiene la pertenencia a la OTAN, con aumento gradual del gasto en defensa.",
+    VOX: "Prioriza la soberanía nacional, cuestiona parte de las políticas de la UE y reclama más atención a Ceuta, Melilla y Gibraltar, con apoyo a la OTAN y mayor gasto en defensa.",
+    SMR: "Política exterior pacifista, apoyo al derecho internacional, reconocimiento de Palestina y cuestionamiento del aumento del gasto militar.",
+    POD: "Salida de la OTAN o freno al gasto militar, apoyo a Palestina, rechazo a la venta de armas a Israel y crítica a la política exterior atlantista.",
+    ERC: "Europa de los pueblos y defensa del derecho de autodeterminación; contra el gasto militar y por una Cataluña con voz en la UE.",
+    JXC: "Más presencia de Cataluña en la UE y defensa del derecho de autodeterminación, con política exterior propia.",
+    SALF: "Menos gasto público exterior y escepticismo ante la burocracia europea, con defensa del libre comercio.",
+    BIL: "Rechazo al aumento del gasto militar, defensa del derecho de autodeterminación y apoyo a Palestina.",
+    PNV: "Europeísmo convencido, presencia de Euskadi en la UE y apoyo a una defensa común europea.",
+    BNG: "Apoyo a la UE con más voz para Galicia, pacifismo y rechazo a la presencia militar de la OTAN.",
+    CC: "Mayor atención a Canarias como frontera y a las relaciones con el vecindario africano, con apoyo a la UE."
+  },
+  seguridad: {
+    PP: "Reforzar plantillas policiales, endurecer penas por reincidencia y desalojo exprés de okupas.",
+    PSOE: "Más efectivos y medios, lucha contra la violencia machista y la ciberdelincuencia.",
+    VOX: "Mano dura con la delincuencia, desalojos inmediatos de okupas y expulsión de extranjeros delincuentes.",
+    SMR: "Seguridad con enfoque preventivo, protección ante violencia de género y derechos garantizados.",
+    POD: "Reformas policiales garantistas y lucha contra la violencia machista.",
+    ERC: "Policía propia (Mossos) con competencias plenas.",
+    JXC: "Competencias plenas en seguridad y refuerzo de los Mossos.",
+    SALF: "Menos estructuras y más eficacia contra el delito, con foco en protección de la propiedad.",
+    BIL: "Policía vasca propia y rechazo a la política penitenciaria actual.",
+    PNV: "Ertzaintza con plenas competencias.",
+    BNG: "Seguridad con enfoque social y respeto a los derechos.",
+    CC: "Más refuerzo policial y medios en las islas."
+  }
+};
+
+// ---- Actualización remota ----
+// URL pública del archivo data.json (p.ej. GitHub Pages / raw). Vacío = solo datos incluidos.
+const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
+// Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
+const DATA_VERSION = 4;
+const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
+const PROGRAM_URLS = { CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf" };
+// Webs oficiales donde la app busca sola el PDF del programa si aún no hay URL directa.
+const PROGRAM_PAGES = {
+  PP: "https://www.pp.es", PSOE: "https://www.psoe.es", VOX: "https://www.voxespana.es",
+  SMR: "https://movimientosumar.es", POD: "https://podemos.info", ERC: "https://www.esquerra.cat",
+  JXC: "https://junts.cat", BIL: "https://www.ehbildu.eus", PNV: "https://www.eaj-pnv.eus",
+  BNG: "https://www.bng.gal", CC: "https://www.coalicioncanaria.org"
+};  // id partido -> url del programa oficial
