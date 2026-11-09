@@ -86,10 +86,10 @@ const PE = (() => {
 
   // ---------- extracción y troceado ----------
   function chunkPage(p, text) {
-    const out = [], sents = text.replace(/(\p{L})-\s+(\p{Ll})/gu, "$1$2").replace(/\s+/g, " ").trim().split(/(?<=[.;:!?])\s+/);
+    const out = [], sents = text.replace(/(\p{L})-\s+(\p{Ll})/gu, "$1$2").replace(/\s+/g, " ").trim().match(/[^.;:!?]+[.;:!?]*\s*/g) || [];
     let cur = "";
     const push = () => { if (cur.trim().length > 40) out.push({ p, t: cur.trim() }); cur = ""; };
-    for (const s of sents) { if ((cur + " " + s).length > 800 && cur) push(); cur += (cur ? " " : "") + s; if (cur.length >= 500) push(); }
+    for (let s of sents) { s = s.trim(); if (!s) continue; if ((cur + " " + s).length > 800 && cur) push(); cur += (cur ? " " : "") + s; if (cur.length >= 500) push(); }
     push();
     return out;
   }

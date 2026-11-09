@@ -1,5 +1,5 @@
 // Service worker: la app funciona sin conexión una vez abierta.
-const VER = "pe-v1";
+const VER = "pe-v2";
 const SHELL = ["./", "index.html", "data.js", "programas.js", "manifest.webmanifest", "icon-192.png"];
 
 self.addEventListener("install", e => {
