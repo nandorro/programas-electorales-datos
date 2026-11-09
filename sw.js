@@ -1,6 +1,6 @@
 // Service worker: la app funciona sin conexión una vez abierta.
-const VER = "pe-v2";
-const SHELL = ["./", "index.html", "data.js", "programas.js", "manifest.webmanifest", "icon-192.png"];
+const VER = "pe-v3";
+const SHELL = ["./", "index.html", "data.js", "programas.js", "manifest.webmanifest", "icon-192.png", "lib/pdf.min.js", "lib/pdf.worker.min.js"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VER).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

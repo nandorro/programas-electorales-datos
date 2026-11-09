@@ -77,6 +77,9 @@ button{font:inherit;cursor:pointer}
     <b>Datos y programas</b>
     <p class="note" style="margin:6px 0">Busca los programas electorales en las webs de los partidos, los descarga al móvil y los guarda para usarlos sin conexión. Si cambian, los vuelve a descargar.</p>
     <button class="sync" id="sync">🔄 Actualizar datos y programas</button>
+    <button class="sync" id="imp" style="background:#1D84CE;margin-top:8px">📥 Buscar programas en Descargas</button>
+    <p class="note" style="margin:4px 0 0">Si un programa se descargó desde la web del partido, impórtalo desde aquí. Solo se leen los PDF que elijas o cuyo nombre parezca un programa electoral.</p>
+    <div id="assign"></div>
     <div id="synclog"></div>
     <div id="progs" class="note" style="margin-top:6px"></div>
   </div>
@@ -234,7 +237,7 @@ async function updateData(){
 }
 function showProgs(){
   const ids=Object.keys(PE.PROGS);
-  $("progs").textContent=ids.length?"📚 En el móvil: "+ids.map(i=>`${i} (${PE.PROGS[i].pages} págs., ${PE.PROGS[i].updated})`).join(" · "):"Aún no hay programas descargados en el móvil.";
+  $("progs").textContent=ids.length?"📚 En el móvil: "+ids.map(i=>`${i}${PE.PROGS[i].source==="descargas"?" 📥":""} (${PE.PROGS[i].pages} págs., ${PE.PROGS[i].updated})`).join(" · "):"Aún no hay programas descargados en el móvil.";
 }
 let syncing=false;
 $("sync").onclick=async()=>{
@@ -253,6 +256,46 @@ $("sync").onclick=async()=>{
   }catch(e){ say("Error: "+(e&&e.message||e)); }
   syncing=false; btn.disabled=false; btn.textContent="🔄 Actualizar datos y programas";
   showProgs(); renderAnswers();
+};
+function askParty(name,cands){
+  return new Promise(res=>{
+    const box=$("assign"); box.innerHTML="";
+    const wrap=document.createElement("div"); wrap.className="card"; wrap.style.margin="8px 0";
+    const order=[...new Set([...(cands||[]),...PARTIES.map(p=>p.id)])];
+    wrap.innerHTML=`<div class="note">¿De qué partido es <b>${esc(name)}</b>?</div>`;
+    const sel=document.createElement("select"); sel.style.cssText="width:100%;padding:10px;margin:8px 0;border-radius:8px";
+    order.forEach(id=>{const o=document.createElement("option");o.value=id;o.textContent=id+" · "+PARTIES.find(p=>p.id===id).name;sel.appendChild(o)});
+    const ok=document.createElement("button"); ok.className="sync"; ok.textContent="Guardar como este partido";
+    const no=document.createElement("button"); no.className="link"; no.textContent="Ignorar este archivo";
+    ok.onclick=()=>{box.innerHTML="";res(sel.value)}; no.onclick=()=>{box.innerHTML="";res(null)};
+    wrap.append(sel,ok,no); box.appendChild(wrap);
+  });
+}
+$("imp").onclick=async()=>{
+  if(syncing)return;
+  const sel=await PE.pick();                 // debe ser lo primero (gesto del usuario)
+  if(sel.cancel)return;
+  syncing=true; const log=$("synclog"); let lines=[]; log.textContent="";
+  const say=(m,replace)=>{ if(replace&&lines.length)lines[lines.length-1]=m; else lines.push(m); log.textContent=lines.join("\n"); log.scrollTop=log.scrollHeight; };
+  $("imp").disabled=true;
+  try{
+    if(!sel.files.length){ say(sel.scanned?"No encontré PDF con aspecto de programa electoral en esa carpeta. Prueba a elegir el archivo a mano.":"No elegiste ningún archivo."); }
+    let ok=0;
+    for(const f of sel.files){
+      try{
+        say(`${f.name}: leyendo…`);
+        const ex=await PE.readFile(f,(i,n)=>say(`${f.name}: página ${i}/${n}`,true));
+        if(!ex.chunks.length)throw new Error("el PDF no tiene texto legible");
+        const g=PE.detectParty(f.name,ex.chunks);
+        const id=g.id||await askParty(f.name,g.cands);
+        if(!id){say(`${f.name}: ignorado`,true);continue}
+        await PE.saveImported(id,f,ex); ok++;
+        say(`${f.name}: ✅ guardado como ${id} (${ex.pages} páginas)`,true);
+      }catch(e){ say(`${f.name}: ⚠️ ${e&&e.message||e}`,true); }
+    }
+    if(sel.files.length)say(`\nListo: ${ok} programa(s) importado(s).`);
+  }catch(e){ say("Error: "+(e&&e.message||e)); }
+  syncing=false; $("imp").disabled=false; showProgs(); renderAnswers();
 };
 if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&!PE.NATIVE){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 renderTopics();

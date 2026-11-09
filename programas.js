@@ -186,5 +186,56 @@ const PE = (() => {
     return out;
   }
 
-  return { PROGS, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, changed, NATIVE };
+  // ---------- importar PDFs ya descargados (carpeta Descargas / selector de archivos) ----------
+  const NAME_FILTER = /program|electoral|manifiesto|propuest|eleccion|general|2026|\b26\b|29nov|cca|psoe|vox|sumar|podemos|junts|esquerra|bildu|pnv|eaj|bng|salf|popular/;
+  const PARTY_PAT = {
+    PP: /\b(partido popular|pp)\b/, PSOE: /\b(psoe|socialista obrero)\b/, VOX: /\bvox\b/, SMR: /\bsumar\b/,
+    POD: /\bpodemos\b/, ERC: /\b(erc|esquerra)\b/, JXC: /\b(junts|jxcat)\b/, SALF: /\b(salf|se acabo la fiesta)\b/,
+    BIL: /\b(bildu)\b/, PNV: /\b(pnv|eaj|partido nacionalista vasco)\b/, BNG: /\b(bng|bloque nacionalista galego)\b/,
+    CC: /\b(coalicion canaria|cca|ccaa)\b/
+  };
+  // Devuelve {id} si hay un partido claro, o {id:null,cands:[...]} si hay que preguntar
+  function detectParty(name, chunks) {
+    const nm = norm(name), tx = norm(chunks.slice(0, 6).map(c => c.t).join(" ")).slice(0, 4000);
+    const sc = Object.keys(PARTY_PAT).map(id => {
+      const re = PARTY_PAT[id]; let s = re.test(nm) ? 4 : 0;
+      const g = new RegExp(re.source, "g"); const m = tx.match(g); s += Math.min(m ? m.length : 0, 5);
+      return { id, s };
+    }).filter(x => x.s > 0).sort((a, b) => b.s - a.s);
+    if (sc.length && sc[0].s >= 3 && (sc.length === 1 || sc[0].s - sc[1].s >= 2)) return { id: sc[0].id };
+    return { id: null, cands: sc.map(x => x.id) };
+  }
+  // Abre el selector: en Chrome/Edge de escritorio busca en Descargas; en iPhone/Android usa el selector de archivos.
+  async function pick() {
+    if (!NATIVE && window.showDirectoryPicker) {
+      try {
+        const dir = await window.showDirectoryPicker({ id: "descargas", startIn: "downloads", mode: "read" });
+        const files = [];
+        for await (const [name, h] of dir.entries()) if (h.kind === "file" && /\.pdf$/i.test(name) && NAME_FILTER.test(norm(name))) files.push(await h.getFile());
+        return { files, scanned: true };
+      } catch (e) { if (e && e.name === "AbortError") return { files: [], cancel: true }; /* carpeta bloqueada: se prueba el selector de archivos */ }
+      if (window.showOpenFilePicker) {
+        try {
+          const hs = await window.showOpenFilePicker({ id: "descargas", startIn: "downloads", multiple: true, types: [{ description: "PDF", accept: { "application/pdf": [".pdf"] } }] });
+          return { files: await Promise.all(hs.map(h => h.getFile())) };
+        } catch (e) { if (e && e.name === "AbortError") return { files: [], cancel: true }; }
+      }
+    }
+    return new Promise(res => {
+      const i = document.createElement("input"); i.type = "file"; i.accept = ".pdf,application/pdf"; i.multiple = true; i.style.display = "none";
+      i.onchange = () => { res({ files: [...i.files] }); i.remove(); };
+      i.oncancel = () => { res({ files: [], cancel: true }); i.remove(); };
+      document.body.appendChild(i); i.click();
+    });
+  }
+  async function readFile(file, onProgress) {
+    const url = URL.createObjectURL(file);
+    try { return await extract(url, onProgress); } finally { URL.revokeObjectURL(url); }
+  }
+  async function saveImported(id, file, ex) {
+    const rec = { id, url: "", source: "descargas", name: file.name, etag: "", lm: String(file.lastModified || ""), size: file.size, checked: Date.now(), updated: new Date().toISOString().slice(0, 10), pages: ex.pages, chunks: ex.chunks };
+    await dbPut(rec); PROGS[id] = rec; return rec;
+  }
+
+  return { PROGS, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, changed, NATIVE };
 })();
