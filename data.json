@@ -1,6 +1,6 @@
 {
- "version": 3,
- "updated": "2026-11-05",
+ "version": 4,
+ "updated": "2026-11-09",
  "parties": [
   {
    "id": "PP",
@@ -489,5 +489,20 @@
   }
  },
  "status": {},
- "programUrls": {}
+ "programUrls": {
+  "CC": "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf"
+ },
+ "programPages": {
+  "PP": "https://www.pp.es",
+  "PSOE": "https://www.psoe.es",
+  "VOX": "https://www.voxespana.es",
+  "SMR": "https://movimientosumar.es",
+  "POD": "https://podemos.info",
+  "ERC": "https://www.esquerra.cat",
+  "JXC": "https://junts.cat",
+  "BIL": "https://www.ehbildu.eus",
+  "PNV": "https://www.eaj-pnv.eus",
+  "BNG": "https://www.bng.gal",
+  "CC": "https://www.coalicioncanaria.org"
+ }
 }
