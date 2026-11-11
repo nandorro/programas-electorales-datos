@@ -153,7 +153,7 @@ const PE = (() => {
       try { url = await discover(pages[id]); if (url) { urls[id] = url; log(`${id}: programa encontrado en su web`); } }
       catch (e) { log(`${id}: no pude consultar su web (${e.message})`); }
     }
-    if (!url) { log(`${id}: programa aún no publicado`); return "none"; }
+    if (!url) { log(`${id}: ${pages[id] ? "programa aún no publicado" : "sin web oficial configurada"}`); return "none"; }
     const prev = PROGS[id], info = await remoteInfo(url);
     if (!changed(prev, url, info)) { prev.checked = Date.now(); await dbPut(prev); log(`${id}: sin cambios`); return "same"; }
     log(`${id}: descargando programa…`);
@@ -191,10 +191,16 @@ const PE = (() => {
   // ---------- importar PDFs ya descargados (carpeta Descargas / selector de archivos) ----------
   const NAME_FILTER = /program|electoral|manifiesto|propuest|eleccion|general|2026|\b26\b|29nov|cca|psoe|vox|sumar|podemos|junts|esquerra|bildu|pnv|eaj|bng|salf|popular/;
   const PARTY_PAT = {
-    PP: /\b(partido popular|pp)\b/, PSOE: /\b(psoe|socialista obrero)\b/, VOX: /\bvox\b/, SMR: /\bsumar\b/,
+    PP: /\b(partido popular|pp)\b/, PSOE: /\b(psoe|socialista obrero)\b/, VOX: /\bvox\b/, FA: /\b(frente amplio|sumar)\b/,
     POD: /\bpodemos\b/, ERC: /\b(erc|esquerra)\b/, JXC: /\b(junts|jxcat)\b/, SALF: /\b(salf|se acabo la fiesta)\b/,
     BIL: /\b(bildu)\b/, PNV: /\b(pnv|eaj|partido nacionalista vasco)\b/, BNG: /\b(bng|bloque nacionalista galego)\b/,
-    CC: /\b(coalicion canaria|cca|ccaa)\b/, MJ: /\b(por un mundo mas justo|mundo mas justo|mj|m j)\b/
+    CC: /\b(coalicion canaria|cca|ccaa)\b/, MJ: /\b(por un mundo mas justo|mundo mas justo|mj|m j)\b/,
+    AA: /\badelante andalucia\b/, CFV: /\b(compromis|front valencia)\b/, PACMA: /\b(pacma|animalista)\b/,
+    FO: /\bfrente obrero\b/, PCTE: /\b(pcte|comunista de los trabajadores)\b/, FE: /\b(falange|jons)\b/,
+    ALH: /\balhora\b/, IE: /\biustitia\b/, SYA: /\bsoria ya\b/, PFAC: /\bfeministas al congreso\b/,
+    EB: /\bescanos en blanco\b/, UPC: /\b(unidad del pueblo canario|upc)\b/, D21: /\b(democracia 21|democracia para el siglo 21|d21)\b/,
+    NEX: /\b(nuevo extremenismo|adelante extremadura)\b/, EXI: /\b(coalicion existe|teruel existe|aragon existe)\b/,
+    ARA: /\b(ara mes)\b/, DRG: /\bdrago\b/
   };
   // Devuelve {id} si hay un partido claro, o {id:null,cands:[...]} si hay que preguntar
   function detectParty(name, chunks) {

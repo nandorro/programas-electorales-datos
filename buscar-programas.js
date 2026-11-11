@@ -46,7 +46,7 @@ async function extract(buf) {
         if (!r.ok) throw new Error("web del partido: HTTP " + r.status);
         url = PE.findProgramLink(await r.text(), data.programPages[id]);
       }
-      if (!url) { resumen.push(`${id}: programa aún no publicado`); if (prev) index.push(meta(id, prev)); continue; }
+      if (!url) { resumen.push(`${id}: ${(data.programPages || {})[id] ? "programa aún no publicado" : "sin web oficial configurada"}`); if (prev) index.push(meta(id, prev)); continue; }
       const h = await get(url, "HEAD", 30000).catch(() => null);
       const info = h && h.ok ? { etag: h.headers.get("etag") || "", lm: h.headers.get("last-modified") || "", size: +h.headers.get("content-length") || 0 } : {};
       if (prev && !PE.changed({ url: prev.url, etag: prev.etag, lm: prev.lm, size: prev.size, checked: Date.now() }, url, info)) {

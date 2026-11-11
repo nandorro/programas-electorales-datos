@@ -1,19 +1,38 @@
-// Partidos ordenados por intención de voto media (encuestas oct-2026: Sigma Dos, El Confidencial, EM-Analytics...).
+// 30 candidaturas al Congreso (29-N 2026, BOE-A-2026-23103). Orden:
+//  src "e": media de intención de voto de las encuestas del 26-oct al 4-nov de 2026 (SW Demoscopia, SocioMétrica, Sigma Dos, EM-Analytics, NC Report).
+//  src "p": sin encuesta publicada; se ordena por su presencia en las papeletas (nº de provincias donde concurre; estimación).
 // Los resúmenes son orientativos, basados en las líneas generales de cada programa. Verifica en la web oficial del partido.
 let PARTIES = [
-  { id: "PP", name: "Partido Popular", color: "#1D84CE", text: "#fff", poll: 30 },
-  { id: "PSOE", name: "Partido Socialista Obrero Español", color: "#E30613", text: "#fff", poll: 26.5 },
-  { id: "VOX", name: "Vox", color: "#63BE21", text: "#fff", poll: 19.5 },
-  { id: "SMR", name: "Sumar", color: "#E5007D", text: "#fff", poll: 6.5 },
-  { id: "POD", name: "Podemos", color: "#6B2C91", text: "#fff", poll: 3.5 },
-  { id: "ERC", name: "Esquerra Republicana", color: "#FFB232", text: "#000", poll: 2.2 },
-  { id: "JXC", name: "Junts per Catalunya", color: "#00C3B2", text: "#000", poll: 1.8 },
-  { id: "SALF", name: "Se Acabó La Fiesta", color: "#FF6A00", text: "#fff", poll: 3 },
-  { id: "BIL", name: "EH Bildu", color: "#B5CF18", text: "#000", poll: 1.3 },
-  { id: "PNV", name: "Partido Nacionalista Vasco", color: "#008C43", text: "#fff", poll: 1.1 },
-  { id: "BNG", name: "Bloque Nacionalista Galego", color: "#6CB4E4", text: "#000", poll: 0.7 },
-  { id: "CC", name: "Coalición Canaria", color: "#FFD500", text: "#000", poll: 0.5 },
-  { id: "MJ", name: "Por Un Mundo Más Justo", color: "#3D2710", text: "#fff", poll: 0.3 }
+  { id: "PP", name: "Partido Popular", color: "#1D84CE", text: "#fff", poll: 31.42, src: "e" },
+  { id: "PSOE", name: "Partido Socialista Obrero Español", color: "#E30613", text: "#fff", poll: 26.64, src: "e" },
+  { id: "VOX", name: "Vox", color: "#63BE21", text: "#fff", poll: 18.74, src: "e" },
+  { id: "FA", name: "Frente Amplio (IU, Sumar, Más Madrid, Comuns…)", color: "#E5007D", text: "#fff", poll: 6.68, src: "e" },
+  { id: "ERC", name: "Esquerra Republicana de Catalunya", color: "#FFB232", text: "#000", poll: 2.14, src: "e" },
+  { id: "SALF", name: "Se Acabó La Fiesta", color: "#FF6A00", text: "#fff", poll: 2.05, src: "e" },
+  { id: "POD", name: "Podemos", color: "#6B2C91", text: "#fff", poll: 1.83, src: "e" },
+  { id: "CFV", name: "Compromís: Front Valencià", color: "#F4511E", text: "#fff", poll: 1.56, src: "e" },
+  { id: "AA", name: "Adelante Andalucía", color: "#00963F", text: "#fff", poll: 1.48, src: "e" },
+  { id: "JXC", name: "Junts per Catalunya", color: "#00C3B2", text: "#fff", poll: 1.3, src: "e" },
+  { id: "BIL", name: "EH Bildu", color: "#B5CF18", text: "#000", poll: 1.16, src: "e" },
+  { id: "PNV", name: "Partido Nacionalista Vasco (EAJ-PNV)", color: "#008C43", text: "#fff", poll: 0.86, src: "e" },
+  { id: "CC", name: "Coalición Canaria–Municipalistas Primero Canarias", color: "#FFD500", text: "#000", poll: 0.76, src: "e" },
+  { id: "BNG", name: "Bloque Nacionalista Galego", color: "#6CB4E4", text: "#000", poll: 0.74, src: "e" },
+  { id: "FO", name: "Frente Obrero", color: "#7B1F1F", text: "#fff", poll: 0.5, src: "p" },
+  { id: "PCTE", name: "Partido Comunista de los Trabajadores de España", color: "#C62828", text: "#fff", poll: 0.43, src: "p" },
+  { id: "PACMA", name: "PACMA (Partido Animalista)", color: "#2E9E6B", text: "#fff", poll: 0.35, src: "p" },
+  { id: "MJ", name: "Por Un Mundo Más Justo", color: "#3D2710", text: "#fff", poll: 0.29, src: "p" },
+  { id: "EB", name: "Escaños en Blanco", color: "#9E9E9E", text: "#000", poll: 0.12, src: "p" },
+  { id: "FE", name: "Falange Española de las JONS", color: "#1A237E", text: "#fff", poll: 0.11, src: "p" },
+  { id: "UPC", name: "Unidad del Pueblo Canario", color: "#7CB342", text: "#fff", poll: 0.04, src: "p" },
+  { id: "D21", name: "Democracia para el Siglo 21 (D21)", color: "#FF7043", text: "#fff", poll: 0.04, src: "p" },
+  { id: "NEX", name: "Nuevo Extremeñismo – Adelante Extremadura", color: "#33691E", text: "#fff", poll: 0.04, src: "p" },
+  { id: "EXI", name: "Coalición Existe (Teruel Existe, Aragón Existe)", color: "#00ACC1", text: "#fff", poll: 0.02, src: "p" },
+  { id: "SYA", name: "Soria ¡Ya!", color: "#C0A020", text: "#000", poll: 0.02, src: "p" },
+  { id: "ALH", name: "Alhora", color: "#AB47BC", text: "#fff", poll: 0.02, src: "p" },
+  { id: "ARA", name: "Ara Més – Front Ampli", color: "#F06292", text: "#fff", poll: 0.02, src: "p" },
+  { id: "DRG", name: "Partido Drago Canarias", color: "#00695C", text: "#fff", poll: 0.02, src: "p" },
+  { id: "IE", name: "Iustitia Europa", color: "#546E7A", text: "#fff", poll: 0.02, src: "p" },
+  { id: "PFAC", name: "Feministas al Congreso", color: "#E040FB", text: "#fff", poll: 0.02, src: "p" }
 ];
 
 let TOPICS = [
@@ -38,7 +57,7 @@ let ANSWERS = {
     PP: "Liberalizar suelo, agilizar licencias y dar seguridad jurídica al propietario; ayudas e avales para jóvenes. Rechaza topar alquileres.",
     PSOE: "Más vivienda pública y asequible (SEPES/Casa 47), limitar subidas de alquiler en zonas tensionadas y gravar especulación.",
     VOX: "Liberar suelo, reducir trabas urbanísticas, priorizar a españoles en vivienda social y combatir la ocupación.",
-    SMR: "Regular y bajar alquileres, ampliar parque público y limitar la compra especulativa y los pisos turísticos.",
+    FA: "Regular y bajar alquileres, ampliar parque público y limitar la compra especulativa y los pisos turísticos.",
     POD: "Bajar los alquileres un 40 %, prohibir desahucios sin alternativa y expropiar viviendas vacías de grandes tenedores.",
     ERC: "Mayor competencia autonómica en vivienda, regulación de alquileres y parque público propio.",
     JXC: "Más suelo y agilidad administrativa, incentivos a la oferta y competencias plenas para Cataluña.",
@@ -52,7 +71,7 @@ let ANSWERS = {
     PP: "Reducir listas de espera con gestión y colaboración público-privada; reforzar la Atención Primaria y el Estatuto Marco.",
     PSOE: "Reforzar la sanidad pública universal, financiación de Atención Primaria y reducción de listas de espera.",
     VOX: "Sanidad pública eficiente, fin de la atención gratuita a inmigrantes irregulares y más peso a la gestión.",
-    SMR: "Blindar la sanidad pública, aumentar presupuesto y salud mental/dental incluidas en la cartera pública.",
+    FA: "Blindar la sanidad pública, aumentar presupuesto y salud mental/dental incluidas en la cartera pública.",
     POD: "Sanidad 100 % pública, subir inversión y eliminar conciertos con la privada.",
     ERC: "Gestión catalana plena y más financiación para el sistema de salud.",
     JXC: "Mejorar el sistema catalán con más financiación y gestión propia.",
@@ -66,7 +85,7 @@ let ANSWERS = {
     PP: "Bajada de IRPF en tramos bajos y medios, deflactación y rechazo a nuevas subidas; reducir el impuesto de sucesiones.",
     PSOE: "Fiscalidad progresiva: gravar grandes patrimonios y beneficios de banca y energéticas; proteger rentas medias y bajas.",
     VOX: "Bajar IRPF y Sociedades, eliminar Patrimonio y Sucesiones y reducir drásticamente el gasto político.",
-    SMR: "Reforma fiscal progresiva, impuesto a grandes fortunas y mayor lucha contra el fraude.",
+    FA: "Reforma fiscal progresiva, impuesto a grandes fortunas y mayor lucha contra el fraude.",
     POD: "Impuestos más altos a grandes fortunas y empresas, y más recaudación para servicios públicos.",
     ERC: "Fiscalidad propia y financiación singular para Cataluña, con un sistema más progresivo.",
     JXC: "Concierto económico/financiación propia y bajar la carga fiscal a empresas y familias.",
@@ -80,7 +99,7 @@ let ANSWERS = {
     PP: "Inmigración legal y ordenada vinculada al empleo; más control de fronteras y reparto de menores con financiación.",
     PSOE: "Migración regulada, vías legales, cooperación con países de origen y reparto solidario de menores.",
     VOX: "Cierre de fronteras, deportación de inmigrantes irregulares y prioridad nacional en ayudas.",
-    SMR: "Regularización extraordinaria, vías seguras y derechos para las personas migrantes.",
+    FA: "Regularización extraordinaria, vías seguras y derechos para las personas migrantes.",
     POD: "Regularización masiva y rechazo a las devoluciones en caliente.",
     ERC: "Competencias en acogida e integración y política migratoria humanitaria.",
     JXC: "Competencias en inmigración para Cataluña y exigencia de integración (idioma).",
@@ -94,7 +113,7 @@ let ANSWERS = {
     PP: "Garantizar las pensiones con revalorización según IPC y sostenibilidad; incentivar planes de empleo.",
     PSOE: "Mantener la revalorización con el IPC, mecanismo de equidad intergeneracional y reforzar el sistema público.",
     VOX: "Garantizar pensiones y priorizar a los españoles; reducir el gasto superfluo para sostenerlas.",
-    SMR: "Subir pensiones mínimas, blindar la revalorización y financiar con más cotizaciones.",
+    FA: "Subir pensiones mínimas, blindar la revalorización y financiar con más cotizaciones.",
     POD: "Pensiones dignas con subida de mínimas y rechazo a elevar la edad de jubilación.",
     ERC: "Mejorar pensiones mínimas y no discriminar a quienes cotizan menos.",
     JXC: "Sostenibilidad del sistema con mayor participación de la economía productiva.",
@@ -108,7 +127,7 @@ let ANSWERS = {
     PP: "Libertad de elección de centro, refuerzo del castellano y rigor académico; más FP y becas por rendimiento.",
     PSOE: "Educación pública de calidad, becas, gratuidad de 0-3 años y refuerzo del profesorado.",
     VOX: "Libertad de elección (cheque escolar), fin del adoctrinamiento y castellano como lengua vehicular.",
-    SMR: "Reforzar la escuela pública, ratios menores y universidad accesible.",
+    FA: "Reforzar la escuela pública, ratios menores y universidad accesible.",
     POD: "Escuela pública y laica, gratuidad universitaria y eliminar conciertos.",
     ERC: "Escuela en catalán y competencias educativas plenas.",
     JXC: "Defender la inmersión lingüística y competencias plenas.",
@@ -122,7 +141,7 @@ let ANSWERS = {
     PP: "Mix energético con nuclear incluida, rebajar impuestos en la factura y apoyo a renovables y redes.",
     PSOE: "Transición ecológica, cierre nuclear escalonado y fuerte impulso a renovables y almacenamiento.",
     VOX: "Rechazo al «fanatismo climático»: mantener nuclear, gas y carbón; bajar impuestos energéticos.",
-    SMR: "Aceleración renovable, descarbonización y energía como bien público.",
+    FA: "Aceleración renovable, descarbonización y energía como bien público.",
     POD: "Nacionalizar partes del sector eléctrico y acelerar renovables.",
     ERC: "Transición energética con autonomía y renovables a pequeña escala.",
     JXC: "Energía asequible y competitiva con mix diversificado y gestión propia.",
@@ -136,7 +155,7 @@ let ANSWERS = {
     PP: "Defensa de la unidad de España y la Constitución, igualdad entre españoles y fin de privilegios fiscales.",
     PSOE: "Diálogo y convivencia dentro de la Constitución, con autogobierno reforzado y financiación autonómica.",
     VOX: "Suprimir o recentralizar las autonomías y prohibir partidos independentistas.",
-    SMR: "Estado plurinacional, diálogo y financiación autonómica justa.",
+    FA: "Estado plurinacional, diálogo y financiación autonómica justa.",
     POD: "Estado plurinacional y derecho a decidir mediante acuerdo.",
     ERC: "Referéndum de autodeterminación pactado y financiación singular.",
     JXC: "Independencia de Cataluña y autonomía fiscal plena.",
@@ -150,7 +169,7 @@ let ANSWERS = {
     PP: "Menos cotizaciones para crear empleo, flexibilidad laboral y reducción de trabas a autónomos.",
     PSOE: "Subir el SMI, reducir la jornada a 37,5 h y reforzar la reforma laboral y la estabilidad.",
     VOX: "Bajar cotizaciones a autónomos y empresas, menos burocracia y priorizar a los españoles.",
-    SMR: "Reducción de jornada a 37,5 h, subida del SMI y refuerzo de la inspección laboral.",
+    FA: "Reducción de jornada a 37,5 h, subida del SMI y refuerzo de la inspección laboral.",
     POD: "Jornada de 32 horas, SMI más alto y derogar los restos de reformas laborales anteriores.",
     ERC: "Mejorar el SMI y adaptar la política laboral a Cataluña.",
     JXC: "Competencias laborales plenas y apoyo a pymes y autónomos.",
@@ -164,7 +183,7 @@ let ANSWERS = {
     PP: "Racionalizar y modernizar la Administración, reducir burocracia y duplicidades, y evaluar el desempeño. Defiende un empleo público estable y de calidad, con acceso por mérito y capacidad, y aboga por reducir la interinidad abusiva con procesos de estabilización. Mantener el modelo de mutualidades como MUFACE.",
     PSOE: "Reducir la temporalidad en el empleo público con procesos de estabilización de interinos, mantener el poder adquisitivo de los salarios públicos ligado al IPC y avanzar en teletrabajo y conciliación. Refuerzo de la oferta de empleo público en servicios esenciales (sanidad, educación, dependencia) y continuidad de MUFACE con nuevo concierto.",
     VOX: "Adelgazar la estructura administrativa: reducir cargos de confianza, asesores y organismos duplicados entre Estado y autonomías, y recortar el gasto político. Mantener a los funcionarios de carrera y el acceso por mérito, con más evaluación del rendimiento y control del absentismo.",
-    SMR: "Poner fin a la interinidad en fraude de ley, subir salarios públicos y reducir la jornada a 35 horas. Más plantilla en servicios públicos esenciales y refuerzo de las condiciones laborales del personal de la Administración.",
+    FA: "Poner fin a la interinidad en fraude de ley, subir salarios públicos y reducir la jornada a 35 horas. Más plantilla en servicios públicos esenciales y refuerzo de las condiciones laborales del personal de la Administración.",
     POD: "Reforzar el empleo público como pilar de los servicios, internalizar servicios hoy externalizados, subir salarios y acabar con la temporalidad. Mejorar derechos laborales y estabilidad de las plantillas.",
     ERC: "Competencias propias en función pública y empleo público para Cataluña, con requisitos lingüísticos de catalán. Estabilización del personal temporal y mejora de condiciones.",
     JXC: "Función pública catalana propia, con el catalán como requisito, agilización de los procesos selectivos y estabilidad del personal interino.",
@@ -178,7 +197,7 @@ let ANSWERS = {
     PP: "Despolitizar la justicia y renovar el CGPJ con jueces elegidos por los propios jueces, rechazo de la amnistía y de los indultos a condenados y refuerzo de la independencia judicial. Endurecer la lucha contra la corrupción y reforzar la transparencia.",
     PSOE: "Defiende la independencia judicial y la renovación del CGPJ, y plantea reformas para modernizar la justicia y agilizar los procesos. Defiende la amnistía y los indultos como herramientas de convivencia y propone más medidas de transparencia y lucha contra el fraude.",
     VOX: "Reforma del CGPJ para que lo elijan los jueces, derogación de la amnistía y endurecimiento de penas por corrupción y reincidencia. Rechaza los indultos políticos y propone mayor control del gasto público.",
-    SMR: "Reformar la justicia para hacerla más accesible y agilizar los procesos, reforzar la lucha contra la corrupción y la transparencia, y defender los instrumentos de convivencia como la amnistía.",
+    FA: "Reformar la justicia para hacerla más accesible y agilizar los procesos, reforzar la lucha contra la corrupción y la transparencia, y defender los instrumentos de convivencia como la amnistía.",
     POD: "Democratizar la justicia, reformar el CGPJ, combatir el 'lawfare' y reforzar la lucha contra la corrupción y los privilegios de los poderosos.",
     ERC: "Amnistía plena y fin de la judicialización del conflicto político catalán, con justicia más cercana y en catalán.",
     JXC: "Amnistía completa, fin de la persecución judicial de los independentistas y reconocimiento de la justicia catalana propia.",
@@ -192,7 +211,7 @@ let ANSWERS = {
     PP: "Lucha contra la violencia de género con más protección a las víctimas, pulseras y medios policiales, y políticas de conciliación y apoyo a la familia y la natalidad. Rechaza el enfoque ideológico y apoya la igualdad de oportunidades.",
     PSOE: "Refuerza la política de igualdad y el Pacto de Estado contra la violencia de género, con más protección y recursos. Defiende el aborto como derecho, la igualdad salarial, los permisos de cuidado y los derechos del colectivo LGTBI.",
     VOX: "Propone sustituir la ley de violencia de género por una norma de violencia intrafamiliar, rechaza la ideología de género y las cuotas, y apoya la natalidad y la familia tradicional.",
-    SMR: "Más derechos y recursos para la igualdad, permisos de cuidado iguales e intransferibles, lucha contra la brecha salarial y refuerzo de los derechos LGTBI y de las mujeres.",
+    FA: "Más derechos y recursos para la igualdad, permisos de cuidado iguales e intransferibles, lucha contra la brecha salarial y refuerzo de los derechos LGTBI y de las mujeres.",
     POD: "Feminismo y derechos LGTBI como eje: ampliar la ley de igualdad, reforzar la protección ante la violencia machista y garantizar el aborto en la sanidad pública.",
     ERC: "Competencias propias en igualdad, protección a las víctimas de violencia machista y derechos LGTBI.",
     JXC: "Medidas de igualdad y contra la violencia machista con gestión catalana y conciliación laboral.",
@@ -206,7 +225,7 @@ let ANSWERS = {
     PP: "Alinearse con la UE y la OTAN, cumplir el compromiso de gasto en defensa y ser un socio fiable. Defiende apoyo a Ucrania y una política exterior que recupere el peso de España en Europa.",
     PSOE: "Compromiso con la UE, apoyo a Ucrania y multilateralismo. Defiende el reconocimiento del Estado palestino y mantiene la pertenencia a la OTAN, con aumento gradual del gasto en defensa.",
     VOX: "Prioriza la soberanía nacional, cuestiona parte de las políticas de la UE y reclama más atención a Ceuta, Melilla y Gibraltar, con apoyo a la OTAN y mayor gasto en defensa.",
-    SMR: "Política exterior pacifista, apoyo al derecho internacional, reconocimiento de Palestina y cuestionamiento del aumento del gasto militar.",
+    FA: "Política exterior pacifista, apoyo al derecho internacional, reconocimiento de Palestina y cuestionamiento del aumento del gasto militar.",
     POD: "Salida de la OTAN o freno al gasto militar, apoyo a Palestina, rechazo a la venta de armas a Israel y crítica a la política exterior atlantista.",
     ERC: "Europa de los pueblos y defensa del derecho de autodeterminación; contra el gasto militar y por una Cataluña con voz en la UE.",
     JXC: "Más presencia de Cataluña en la UE y defensa del derecho de autodeterminación, con política exterior propia.",
@@ -220,7 +239,7 @@ let ANSWERS = {
     PP: "Reforzar plantillas policiales, endurecer penas por reincidencia y desalojo exprés de okupas.",
     PSOE: "Más efectivos y medios, lucha contra la violencia machista y la ciberdelincuencia.",
     VOX: "Mano dura con la delincuencia, desalojos inmediatos de okupas y expulsión de extranjeros delincuentes.",
-    SMR: "Seguridad con enfoque preventivo, protección ante violencia de género y derechos garantizados.",
+    FA: "Seguridad con enfoque preventivo, protección ante violencia de género y derechos garantizados.",
     POD: "Reformas policiales garantistas y lucha contra la violencia machista.",
     ERC: "Policía propia (Mossos) con competencias plenas.",
     JXC: "Competencias plenas en seguridad y refuerzo de los Mossos.",
@@ -236,7 +255,7 @@ let ANSWERS = {
 // URL pública del archivo data.json (p.ej. GitHub Pages / raw). Vacío = solo datos incluidos.
 const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
 // Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
-const DATA_VERSION = 5;
+const DATA_VERSION = 6;
 const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
 const PROGRAM_URLS = {
   CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
@@ -246,7 +265,11 @@ const PROGRAM_URLS = {
 // Webs oficiales donde la app busca sola el PDF del programa si aún no hay URL directa.
 const PROGRAM_PAGES = {
   PP: "https://www.pp.es", PSOE: "https://www.psoe.es", VOX: "https://www.voxespana.es",
-  SMR: "https://movimientosumar.es", POD: "https://podemos.info", ERC: "https://www.esquerra.cat",
-  JXC: "https://junts.cat", BIL: "https://www.ehbildu.eus", PNV: "https://www.eaj-pnv.eus",
-  BNG: "https://www.bng.gal", CC: "https://www.coalicioncanaria.org", MJ: "https://www.porunmundomasjusto.es"
+  POD: "https://podemos.info", ERC: "https://www.esquerra.cat", JXC: "https://junts.cat",
+  BIL: "https://www.ehbildu.eus", PNV: "https://www.eaj-pnv.eus", BNG: "https://www.bng.gal",
+  CC: "https://www.coalicioncanaria.org", MJ: "https://www.porunmundomasjusto.es",
+  AA: "https://adelanteandalucia.org", CFV: "https://compromis.net", PACMA: "https://pacma.es",
+  FO: "https://frenteobrero.es", PCTE: "https://pcte.es", FE: "https://www.falange.es",
+  ALH: "https://alhora.cat", IE: "https://iustitiaeuropa.es", SYA: "https://soriaya.org",
+  PFAC: "https://feministasalcongreso.es"
 };  // id partido -> url del programa oficial
