@@ -47,7 +47,7 @@ button{font:inherit;cursor:pointer}
 .sync[disabled]{opacity:.6}
 #synclog{font-size:.8rem;color:var(--mut);white-space:pre-wrap;margin-top:8px;max-height:220px;overflow:auto}
 .lbl{font-size:.75rem;font-weight:600;color:var(--mut);margin:8px 0 2px;display:block}.badge{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
-.badge.prog{background:#2e7d32;color:#fff}.badge.res{background:#f9a825;color:#000}
+.badge.prog{background:#2e7d32;color:#fff}.badge.res{background:#f9a825;color:#000}.badge.non{background:#78909c;color:#fff}
 </style>
 </head>
 <body>
@@ -198,7 +198,7 @@ function renderAnswers(){
     let inline="";
     if(ps.length)inline+=`<span class="lbl">📄 Lo que dice su programa</span>`+quote(ps[0])+(main?`<span class="lbl">Resumen general</span>`:"");
     inline+=esc(main);
-    if(!main&&!ps.length)inline+=`<span class="note">Aún no tengo resumen de este partido para este tema${PE.PROGS[p.id]?" y su programa no menciona estas palabras":". Pulsa «Actualizar datos y programas» para cargar su programa"}.</span>`;
+    if(!main&&!ps.length)inline+=`<span class="note">${PE.PROGS[p.id]?"Su programa no menciona estas palabras.":"Este partido aún no tiene programa cargado en la app (puede que no lo haya publicado todavía). Pulsa «Actualizar datos y programas» o impórtalo con «Buscar programas en Descargas»."}</span>`;
     if(first)inline+=`<div class="rel"><i>También, sobre ${tl(first)}:</i> ${esc(ANSWERS[first][p.id])}</div>`;
     let hidden="";
     ps.slice(1).forEach(x=>hidden+=quote(x));
@@ -218,7 +218,11 @@ function toggleMore(btn){
   a.querySelector(".hid").classList.toggle("hide",!open);
   btn.textContent=open?"Leer menos":"Leer más";
 }
-function badge(id){return (SOURCE_STATUS[id]==="programa"||PE.PROGS[id])?'<span class="badge prog">Programa oficial</span>':'<span class="badge res">Resumen provisional</span>'}
+function hasSummary(id){return TOPICS.some(t=>ANSWERS[t.id]&&ANSWERS[t.id][id])}
+function badge(id){
+  if(SOURCE_STATUS[id]==="programa"||PE.PROGS[id])return '<span class="badge prog">Programa oficial</span>';
+  return hasSummary(id)?'<span class="badge res">Resumen provisional</span>':'<span class="badge non">Programa no publicado</span>';
+}
 const CK="pe_cache_v1";
 function applyData(d){
   if(d.parties){PARTIES=d.parties;fixRange()} if(d.topics)TOPICS=d.topics; if(d.answers)ANSWERS=d.answers;
