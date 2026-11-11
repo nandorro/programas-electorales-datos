@@ -47,22 +47,34 @@ const PE = (() => {
   // ---------- descubrimiento: busca el PDF del programa en la web del partido ----------
   function findProgramLink(html, pageUrl) {
     const cands = [];
-    const re = /href\s*=\s*["']([^"']+?\.pdf[^"']*)["']/gi; let m;
+    const re = /<a\b[^>]*?href\s*=\s*["']([^"']+?\.pdf[^"']*)["'][^>]*>([\s\S]{0,300}?)<\/a>|href\s*=\s*["']([^"']+?\.pdf[^"']*)["']/gi; let m;
     while ((m = re.exec(html))) {
-      let u; try { u = new URL(m[1].replace(/&amp;/g, "&"), pageUrl).href; } catch (e) { continue; }
-      const l = decodeURIComponent(u).toLowerCase();
+      const raw = m[1] || m[3], text = norm((m[2] || "").replace(/<[^>]+>/g, " "));
+      let u; try { u = new URL(raw.replace(/&amp;/g, "&"), pageUrl).href; } catch (e) { continue; }
+      const l = decodeURIComponent(u).toLowerCase(), both = l + " " + text;
       let sc = 0;
-      if (/programa/.test(l)) sc += 3;
-      if (/electoral/.test(l)) sc += 2;
+      if (/programa/.test(both)) sc += 3;
+      if (/electoral/.test(both)) sc += 2;
       if (/2026|26-|29nov|generales/.test(l)) sc += 1;
-      if (/\/uploads\/2026\/1[01]\//.test(l)) sc += 2;          // PDF subido en oct/nov de 2026 (p. ej. LA-RECONSTRUCCION-NACIONAL.pdf)
-      if (/estatut|reglament|manifesto|memoria|cuentas|aviso|privacidad|cookies|transparencia|comunicado/.test(l)) sc -= 4;
-      if (/resumen|accesible|lectura|facil|fácil/.test(l)) sc -= 1;
-      if (sc >= 3) cands.push({ u, sc });
+      if (/\/uploads\/2026\/1[01]\//.test(l)) sc += 1;          // subido en oct/nov de 2026
+      const y = l.match(/\/(20\d\d)\/(\d\d)\//); if (y && +y[1] < 2026) sc -= 6;   // PDF de años anteriores
+      if (/estatut|reglament|manifesto|memoria|cuentas|aviso|privacidad|cookies|transparencia|comunicado|flyer|folleto|cartel|aval|prensa|dossier|boletin|newsletter/.test(both)) sc -= 4;
+      if (/resumen|accesible|lectura|facil|fácil/.test(both)) sc -= 1;
+      if (sc >= 2) cands.push({ u, sc });
     }
     cands.sort((a, b) => b.sc - a.sc);
-    return cands.length ? cands[0].u : null;
+    return cands.length ? cands[0].u : null;       // los de puntuación 2 son "débiles": se comprueba el contenido
   }
+  // ¿Parece el programa de las elecciones del 29-N-2026? (se exige a todo PDF encontrado automáticamente)
+  function looksLikeProgram(chunks, pages) {
+    const total = chunks.reduce((a, c) => a + c.t.length, 0);
+    if (pages < 8 || total < 15000) return false;
+    const t = norm(chunks.map(c => c.t).join(" "));
+    return /programa|propuest|medidas/.test(t) && (/2026/.test(t) || /\b29 ?n\b|29 de noviembre/.test(t));
+  }
+  const REJ = "pe_rechazados";
+  const rejected = () => { try { return JSON.parse(localStorage.getItem(REJ) || "[]"); } catch (e) { return []; } };
+  const reject = u => { try { const r = rejected(); if (!r.includes(u)) { r.push(u); localStorage.setItem(REJ, JSON.stringify(r)); } } catch (e) {} };
   async function discover(pageUrl) {
     const r = await http(pageUrl);
     if (r.status >= 400 || !r.data) throw new Error("HTTP " + r.status);
@@ -148,9 +160,9 @@ const PE = (() => {
   // ---------- sincronizar un partido ----------
   async function syncParty(p, urls, pages, log) {
     if (!NATIVE) return syncFromSite(p, urls, log);
-    const id = p.id; let url = urls[id];
+    const id = p.id; let url = urls[id], found = null;
     if (!url && pages[id]) {
-      try { url = await discover(pages[id]); if (url) { urls[id] = url; log(`${id}: programa encontrado en su web`); } }
+      try { url = await discover(pages[id]); if (url && rejected().includes(url)) { log(`${id}: el PDF de su web no parece el programa de 2026 (ignorado)`); return "none"; } if (url) { found = url; log(`${id}: posible programa encontrado en su web`); } }
       catch (e) { log(`${id}: no pude consultar su web (${e.message})`); }
     }
     if (!url) { log(`${id}: ${pages[id] ? "programa aún no publicado" : "sin web oficial configurada"}`); return "none"; }
@@ -161,6 +173,8 @@ const PE = (() => {
     log(`${id}: leyendo el texto…`, true);
     const ex = await extract(src, (i, n) => log(`${id}: leyendo página ${i}/${n}`, true));
     if (!ex.chunks.length) throw new Error("el PDF no contiene texto legible");
+    if (!looksLikeProgram(ex.chunks, ex.pages)) { reject(url); throw new Error("el PDF encontrado no parece el programa del 29-N 2026 (descartado)"); }
+    if (found) urls[id] = url;
     const rec = { id, url, etag: info.etag || "", lm: info.lm || "", size: info.size || 0, checked: Date.now(), updated: new Date().toISOString().slice(0, 10), pages: ex.pages, chunks: ex.chunks };
     await dbPut(rec); PROGS[id] = rec;
     log(`${id}: ✅ programa guardado (${ex.pages} páginas)`);
@@ -245,5 +259,5 @@ const PE = (() => {
     await dbPut(rec); PROGS[id] = rec; return rec;
   }
 
-  return { PROGS, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, changed, NATIVE };
+  return { PROGS, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, looksLikeProgram, changed, NATIVE };
 })();

@@ -17,6 +17,8 @@ const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/
 const data = JSON.parse(fs.readFileSync(path.join(SITE, "data.json"), "utf8"));
 const OUT = path.join(SITE, "programas"); fs.mkdirSync(OUT, { recursive: true });
 const MAXMB = 150;
+const RFILE = path.join(OUT, "rechazados.json");
+const rechazados = fs.existsSync(RFILE) ? JSON.parse(fs.readFileSync(RFILE, "utf8")) : [];
 
 async function get(url, method = "GET", ms = 60000) {
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
@@ -46,6 +48,7 @@ async function extract(buf) {
         if (!r.ok) throw new Error("web del partido: HTTP " + r.status);
         url = PE.findProgramLink(await r.text(), data.programPages[id]);
       }
+      if (url && rechazados.includes(url)) { resumen.push(`${id}: PDF descartado antes (no es el programa de 2026)`); continue; }
       if (!url) { resumen.push(`${id}: ${(data.programPages || {})[id] ? "programa aún no publicado" : "sin web oficial configurada"}`); if (prev) index.push(meta(id, prev)); continue; }
       const h = await get(url, "HEAD", 30000).catch(() => null);
       const info = h && h.ok ? { etag: h.headers.get("etag") || "", lm: h.headers.get("last-modified") || "", size: +h.headers.get("content-length") || 0 } : {};
@@ -59,6 +62,7 @@ async function extract(buf) {
       if (buf.slice(0, 5).toString() !== "%PDF-") throw new Error("el archivo no es un PDF");
       const ex = await extract(buf);
       if (!ex.chunks.length) throw new Error("el PDF no tiene texto legible (imagen escaneada)");
+      if (!PE.looksLikeProgram(ex.chunks, ex.pages)) { if (prev && prev.url === url) fs.unlinkSync(file); rechazados.push(url); fs.writeFileSync(RFILE, JSON.stringify(rechazados, null, 1)); throw new Error("el PDF no parece el programa del 29-N 2026 (descartado): " + url); }
       const rec = { url, etag: r.headers.get("etag") || info.etag || "", lm: r.headers.get("last-modified") || info.lm || "", size: buf.length, pages: ex.pages, updated: new Date().toISOString().slice(0, 10), chunks: ex.chunks };
       fs.writeFileSync(file, JSON.stringify(rec));
       index.push(meta(id, rec)); resumen.push(`${id}: ✅ ${prev ? "actualizado" : "nuevo"} (${ex.pages} págs., ${(buf.length / 1048576).toFixed(1)} MB)`);
