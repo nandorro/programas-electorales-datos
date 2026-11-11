@@ -1,9 +1,23 @@
 [
  {
+  "id": "PP",
+  "url": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+  "pages": 82,
+  "updated": "2026-11-11",
+  "size": 12279932
+ },
+ {
   "id": "CC",
   "url": "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
   "pages": 23,
   "updated": "2026-11-09",
   "size": 69215587
+ },
+ {
+  "id": "MJ",
+  "url": "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf",
+  "pages": 95,
+  "updated": "2026-11-11",
+  "size": 4952507
  }
 ]

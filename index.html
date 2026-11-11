@@ -97,6 +97,8 @@ button{font:inherit;cursor:pointer}
 let shown = [], selected = new Set(), topic = null;
 const $ = id => document.getElementById(id);
 const range = $("range");
+function fixRange(){range.max=PARTIES.length;if(+range.value>PARTIES.length)range.value=PARTIES.length;$("num").textContent=range.value}
+fixRange();
 range.oninput = () => $("num").textContent = range.value;
 
 $("start").onclick = () => {
@@ -189,13 +191,14 @@ function renderAnswers(){
   const list=shown.filter(p=>selected.has(p.id));
   if(!list.length){box.innerHTML='<span class="note">Pulsa uno o varios partidos (o ALL).</span>';return}
   box.innerHTML=list.map(p=>{
-    const main=ANSWERS[topic][p.id];
+    const main=(ANSWERS[topic]&&ANSWERS[topic][p.id])||"";
     const ps=passages(p.id);
     const rel=relTopics.filter(t=>ANSWERS[t]&&ANSWERS[t][p.id]);
     const first=rel[0], more=rel.slice(1);
     let inline="";
-    if(ps.length)inline+=`<span class="lbl">📄 Lo que dice su programa</span>`+quote(ps[0])+`<span class="lbl">Resumen general</span>`;
+    if(ps.length)inline+=`<span class="lbl">📄 Lo que dice su programa</span>`+quote(ps[0])+(main?`<span class="lbl">Resumen general</span>`:"");
     inline+=esc(main);
+    if(!main&&!ps.length)inline+=`<span class="note">Aún no tengo resumen de este partido para este tema${PE.PROGS[p.id]?" y su programa no menciona estas palabras":". Pulsa «Actualizar datos y programas» para cargar su programa"}.</span>`;
     if(first)inline+=`<div class="rel"><i>También, sobre ${tl(first)}:</i> ${esc(ANSWERS[first][p.id])}</div>`;
     let hidden="";
     ps.slice(1).forEach(x=>hidden+=quote(x));
@@ -218,7 +221,7 @@ function toggleMore(btn){
 function badge(id){return (SOURCE_STATUS[id]==="programa"||PE.PROGS[id])?'<span class="badge prog">Programa oficial</span>':'<span class="badge res">Resumen provisional</span>'}
 const CK="pe_cache_v1";
 function applyData(d){
-  if(d.parties)PARTIES=d.parties; if(d.topics)TOPICS=d.topics; if(d.answers)ANSWERS=d.answers;
+  if(d.parties){PARTIES=d.parties;fixRange()} if(d.topics)TOPICS=d.topics; if(d.answers)ANSWERS=d.answers;
   Object.assign(SOURCE_STATUS,d.status||{}); Object.assign(PROGRAM_URLS,d.programUrls||{}); Object.assign(PROGRAM_PAGES,d.programPages||{});
 }
 async function updateData(){

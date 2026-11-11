@@ -1,6 +1,6 @@
 {
- "version": 4,
- "updated": "2026-11-09",
+ "version": 5,
+ "updated": "2026-11-11",
  "parties": [
   {
    "id": "PP",
@@ -85,6 +85,13 @@
    "color": "#FFD500",
    "text": "#000",
    "poll": 0.5
+  },
+  {
+   "id": "MJ",
+   "name": "Por Un Mundo Más Justo",
+   "color": "#3D2710",
+   "text": "#fff",
+   "poll": 0.3
   }
  ],
  "topics": [
@@ -490,7 +497,9 @@
  },
  "status": {},
  "programUrls": {
-  "CC": "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf"
+  "CC": "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
+  "PP": "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+  "MJ": "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf"
  },
  "programPages": {
   "PP": "https://www.pp.es",
@@ -503,6 +512,7 @@
   "BIL": "https://www.ehbildu.eus",
   "PNV": "https://www.eaj-pnv.eus",
   "BNG": "https://www.bng.gal",
-  "CC": "https://www.coalicioncanaria.org"
+  "CC": "https://www.coalicioncanaria.org",
+  "MJ": "https://www.porunmundomasjusto.es"
  }
 }

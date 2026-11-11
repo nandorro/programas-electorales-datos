@@ -55,6 +55,8 @@ const PE = (() => {
       if (/programa/.test(l)) sc += 3;
       if (/electoral/.test(l)) sc += 2;
       if (/2026|26-|29nov|generales/.test(l)) sc += 1;
+      if (/\/uploads\/2026\/1[01]\//.test(l)) sc += 2;          // PDF subido en oct/nov de 2026 (p. ej. LA-RECONSTRUCCION-NACIONAL.pdf)
+      if (/estatut|reglament|manifesto|memoria|cuentas|aviso|privacidad|cookies|transparencia|comunicado/.test(l)) sc -= 4;
       if (/resumen|accesible|lectura|facil|fácil/.test(l)) sc -= 1;
       if (sc >= 3) cands.push({ u, sc });
     }
@@ -192,7 +194,7 @@ const PE = (() => {
     PP: /\b(partido popular|pp)\b/, PSOE: /\b(psoe|socialista obrero)\b/, VOX: /\bvox\b/, SMR: /\bsumar\b/,
     POD: /\bpodemos\b/, ERC: /\b(erc|esquerra)\b/, JXC: /\b(junts|jxcat)\b/, SALF: /\b(salf|se acabo la fiesta)\b/,
     BIL: /\b(bildu)\b/, PNV: /\b(pnv|eaj|partido nacionalista vasco)\b/, BNG: /\b(bng|bloque nacionalista galego)\b/,
-    CC: /\b(coalicion canaria|cca|ccaa)\b/
+    CC: /\b(coalicion canaria|cca|ccaa)\b/, MJ: /\b(por un mundo mas justo|mundo mas justo|mj|m j)\b/
   };
   // Devuelve {id} si hay un partido claro, o {id:null,cands:[...]} si hay que preguntar
   function detectParty(name, chunks) {

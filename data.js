@@ -12,7 +12,8 @@ let PARTIES = [
   { id: "BIL", name: "EH Bildu", color: "#B5CF18", text: "#000", poll: 1.3 },
   { id: "PNV", name: "Partido Nacionalista Vasco", color: "#008C43", text: "#fff", poll: 1.1 },
   { id: "BNG", name: "Bloque Nacionalista Galego", color: "#6CB4E4", text: "#000", poll: 0.7 },
-  { id: "CC", name: "Coalición Canaria", color: "#FFD500", text: "#000", poll: 0.5 }
+  { id: "CC", name: "Coalición Canaria", color: "#FFD500", text: "#000", poll: 0.5 },
+  { id: "MJ", name: "Por Un Mundo Más Justo", color: "#3D2710", text: "#fff", poll: 0.3 }
 ];
 
 let TOPICS = [
@@ -235,13 +236,17 @@ let ANSWERS = {
 // URL pública del archivo data.json (p.ej. GitHub Pages / raw). Vacío = solo datos incluidos.
 const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
 // Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
-const DATA_VERSION = 4;
+const DATA_VERSION = 5;
 const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
-const PROGRAM_URLS = { CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf" };
+const PROGRAM_URLS = {
+  CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
+  PP: "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+  MJ: "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf"
+};
 // Webs oficiales donde la app busca sola el PDF del programa si aún no hay URL directa.
 const PROGRAM_PAGES = {
   PP: "https://www.pp.es", PSOE: "https://www.psoe.es", VOX: "https://www.voxespana.es",
   SMR: "https://movimientosumar.es", POD: "https://podemos.info", ERC: "https://www.esquerra.cat",
   JXC: "https://junts.cat", BIL: "https://www.ehbildu.eus", PNV: "https://www.eaj-pnv.eus",
-  BNG: "https://www.bng.gal", CC: "https://www.coalicioncanaria.org"
+  BNG: "https://www.bng.gal", CC: "https://www.coalicioncanaria.org", MJ: "https://www.porunmundomasjusto.es"
 };  // id partido -> url del programa oficial
