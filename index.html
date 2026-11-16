@@ -122,11 +122,14 @@ function renderTopics(){
 const STOP=new Set("que qué como cómo cual cuál los las del con por para una uno unos unas sus sobre hacen hara haran hará harán piensa piensan opina quiere quieren van sera será han hay esta este estos son".split(" "));
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9ñ ]/g," ");
 const stem=w=>w.slice(0,5);
-let query="", relTopics=[], qTokens=[], qFree=false;
+let query="", relTopics=[], qTokens=[], qFree=false, qNeed=1;
 function setTopic(id,q){
   topic=id; query=q||""; relTopics=[]; qFree=!!q;
   const tt=TOPICS.find(x=>x.id===id);
-  qTokens=q?PE.tokensOf(q):[...new Set(tt.kw.flatMap(k=>PE.tokensOf(k)).concat(PE.tokensOf(tt.label)))];
+  const base=q?PE.tokensOf(q):[...new Set(tt.kw.flatMap(k=>PE.tokensOf(k)).concat(PE.tokensOf(tt.label)))];
+  qNeed=Math.max(1,Math.ceil(base.length*0.4));
+  qTokens=PE.expand(base);
+  if(qTokens.length>=4)qNeed=Math.max(qNeed,2);   // con equivalentes en otros idiomas, exige 2 términos distintos para evitar ruido
   const t=TOPICS.find(x=>x.id===id);
   $("curq").textContent=t?(q?"Mejor coincidencia: ":"Tema: ")+t.label:"";
   renderTopics(); renderAnswers();
@@ -182,7 +185,7 @@ function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 function tl(id){return TOPICS.find(t=>t.id===id).label}
 function passages(pid){
   const pr=PE.PROGS[pid]; if(!pr||!qTokens.length)return[];
-  return PE.search(pr,qTokens,3,qFree?{}:{need:1,minSc:4});
+  return PE.search(pr,qTokens,3,qFree?{need:qNeed}:{need:1,minSc:4});
 }
 function quote(x){return `<div class="quote"><small>Programa oficial · pág. ${x.p}</small>«${esc(x.t)}»</div>`}
 function renderAnswers(){
@@ -225,7 +228,7 @@ function badge(id){
 }
 const CK="pe_cache_v1";
 function applyData(d){
-  if(d.parties){PARTIES=d.parties;fixRange()} if(d.topics)TOPICS=d.topics; if(d.answers)ANSWERS=d.answers;
+  if(d.parties){PARTIES=d.parties;fixRange()} if(d.mlKw)ML_KW=d.mlKw; if(d.topics)TOPICS=d.topics; if(d.answers)ANSWERS=d.answers;
   Object.assign(SOURCE_STATUS,d.status||{}); Object.assign(PROGRAM_URLS,d.programUrls||{}); Object.assign(PROGRAM_PAGES,d.programPages||{});
 }
 async function updateData(){

@@ -62,7 +62,7 @@ async function extract(buf) {
       if (buf.slice(0, 5).toString() !== "%PDF-") throw new Error("el archivo no es un PDF");
       const ex = await extract(buf);
       if (!ex.chunks.length) throw new Error("el PDF no tiene texto legible (imagen escaneada)");
-      if (!PE.looksLikeProgram(ex.chunks, ex.pages)) { if (prev && prev.url === url) fs.unlinkSync(file); rechazados.push(url); fs.writeFileSync(RFILE, JSON.stringify(rechazados, null, 1)); throw new Error("el PDF no parece el programa del 29-N 2026 (descartado): " + url); }
+      if (!PE.looksLikeProgram(ex.chunks, ex.pages, { url, lm: r.headers.get("last-modified") || info.lm })) { if (prev && prev.url === url) fs.unlinkSync(file); rechazados.push(url); fs.writeFileSync(RFILE, JSON.stringify(rechazados, null, 1)); throw new Error("el PDF no parece el programa del 29-N 2026 (descartado): " + url); }
       const rec = { url, etag: r.headers.get("etag") || info.etag || "", lm: r.headers.get("last-modified") || info.lm || "", size: buf.length, pages: ex.pages, updated: new Date().toISOString().slice(0, 10), chunks: ex.chunks };
       fs.writeFileSync(file, JSON.stringify(rec));
       index.push(meta(id, rec)); resumen.push(`${id}: ✅ ${prev ? "actualizado" : "nuevo"} (${ex.pages} págs., ${(buf.length / 1048576).toFixed(1)} MB)`);

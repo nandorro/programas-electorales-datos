@@ -253,13 +253,40 @@ let ANSWERS = {
 
 // ---- Actualización remota ----
 // URL pública del archivo data.json (p.ej. GitHub Pages / raw). Vacío = solo datos incluidos.
+// Equivalentes en catalán, gallego y euskera por tema, para buscar en programas que no están en castellano (ERC, BNG, PNV, Junts...).
+let ML_KW = {
+  vivienda: ["habitatge","lloguer","lloguers","vivenda","vivendas","aluguer","alugueres","etxebizitza","alokairu","hipoteca","desnonament","desafiuzamento"],
+  sanidad: ["sanitat","sanidade","salut","saude","osasun","hospital","hospitals","metges","medicos","atencio primaria","llistes d'espera","listas de espera","listes d'espera"],
+  impuestos: ["impostos","imposto","tributs","tributos","fiscalitat","fiscalidade","zerga","irpf","iva"],
+  inmigracion: ["immigracio","immigrants","immigrant","inmigrantes","migrants","migracio","migracion","etorkin","refugiats","refuxiados","fronteres"],
+  pensiones: ["pensions","pensions","pensions minimes","jubilacio","xubilacion","xubilacions","pentsio","pensionistes","pensionistas"],
+  educacion: ["educacio","ensenyament","ensino","escola","escoles","escolas","hezkuntza","universitat","universitats","universidade","docents","profesorado","beques","bolsas"],
+  energia: ["energia","enerxia","renovables","renovavels","nuclear","electric","electrica","electricidade","emissions","emisions","clima","climatic"],
+  territorio: ["autodeterminacio","sobirania","soberania","autogovern","autogoberno","independencia","referendum","referendo","finançament","financiamiento","financiacion","cataluña","catalunya","galiza","galicia","euskadi","nacio","nacion"],
+  empleo: ["ocupacio","treball","treballadors","emprego","traballo","traballadores","lan","salari","salarios","salario","jornada","hores","atur","paro","desemprego","autonoms","autonomos","cotitzacions"],
+  seguridad: ["seguretat","seguridade","policia","policies","mossos","ertzaintza","delicte","delitos","okupacio","ocupacion","violencia"],
+  funcionarios: ["funcionaris","funcionarios","funcionariado","ocupacio publica","emprego publico","administracio","administracion","interins","interinos","oposicions","oposicions","oposiciones","servei public","servizo publico"],
+  justicia: ["justicia","xustiza","judicial","judicials","jutges","xuices","corrupcio","corrupcion","amnistia","indults","transparencia","transparencia","fiscalia","fiscalia"],
+  igualdad: ["igualtat","igualdade","feminisme","feminismo","feministes","masclista","machista","violencia masclista","violencia machista","dones","mulleres","emakume","lgtbi","aborte","aborto","cures","coidados"],
+  exterior: ["exterior","defensa","europa","europea","otan","politica exterior","relacions internacionals","exercit","exercito","palestina","ucraina","ucraina","israel","armes","armas","gasto militar"]
+};
 const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
 // Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
-const DATA_VERSION = 6;
+const DATA_VERSION = 7;
 const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
 const PROGRAM_URLS = {
-  CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
   PP: "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
+  PSOE: "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+  VOX: "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+  FA: "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+  ERC: "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf",
+  SALF: "https://www.seacabolafiesta.com/SALF_Contrato_Electoral_29N.pdf",
+  AA: "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf",
+  PNV: "https://www.eaj-pnv.eus/es/adjuntos-documentos/21765/pdf/programa-electoral-29n",
+  CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
+  BNG: "https://www.bng.gal/media/bnggaliza/files/2026/11/03/26_bng_xerais_documentos_programa_electoral.pdf",
+  FO: "https://frenteobrero.es/documentos/programa-frente-obrero.pdf",
+  FE: "https://falange.es/wp-content/uploads/2026/11/FEDELASJONS_ProgramaElectoral_29NGenerales2026.pdf",
   MJ: "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf"
 };
 // Webs oficiales donde la app busca sola el PDF del programa si aún no hay URL directa.
@@ -271,5 +298,5 @@ const PROGRAM_PAGES = {
   AA: "https://adelanteandalucia.org", CFV: "https://compromis.net", PACMA: "https://pacma.es",
   FO: "https://frenteobrero.es", PCTE: "https://pcte.es", FE: "https://www.falange.es",
   ALH: "https://alhora.cat", IE: "https://iustitiaeuropa.es", SYA: "https://soriaya.org",
-  PFAC: "https://feministasalcongreso.es"
+  PFAC: "https://feministasalcongreso.es", FA: "https://frenteamplio.info"
 };  // id partido -> url del programa oficial

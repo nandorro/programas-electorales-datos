@@ -66,11 +66,15 @@ const PE = (() => {
     return cands.length ? cands[0].u : null;       // los de puntuación 2 son "débiles": se comprueba el contenido
   }
   // ¿Parece el programa de las elecciones del 29-N-2026? (se exige a todo PDF encontrado automáticamente)
-  function looksLikeProgram(chunks, pages) {
+  function looksLikeProgram(chunks, pages, meta) {
+    meta = meta || {};
     const total = chunks.reduce((a, c) => a + c.t.length, 0);
     if (pages < 8 || total < 15000) return false;
     const t = norm(chunks.map(c => c.t).join(" "));
-    return /programa|propuest|medidas/.test(t) && (/2026/.test(t) || /\b29 ?n\b|29 de noviembre/.test(t));
+    if (!/programa|propuest|medidas/.test(t)) return false;
+    // ¿es de estas elecciones? el texto la cita, o la dirección dice 2026/29N, o el archivo es posterior a la convocatoria (oct-2026)
+    const lm = Date.parse(meta.lm || ""), url = (meta.url || "").toLowerCase();
+    return /2026/.test(t) || /29 ?n|29 de noviembre/.test(t) || /2026|29n/.test(url) || (lm >= Date.parse("2026-09-01"));
   }
   const REJ = "pe_rechazados";
   const rejected = () => { try { return JSON.parse(localStorage.getItem(REJ) || "[]"); } catch (e) { return []; } };
@@ -173,7 +177,7 @@ const PE = (() => {
     log(`${id}: leyendo el texto…`, true);
     const ex = await extract(src, (i, n) => log(`${id}: leyendo página ${i}/${n}`, true));
     if (!ex.chunks.length) throw new Error("el PDF no contiene texto legible");
-    if (!looksLikeProgram(ex.chunks, ex.pages)) { reject(url); throw new Error("el PDF encontrado no parece el programa del 29-N 2026 (descartado)"); }
+    if (!looksLikeProgram(ex.chunks, ex.pages, { url, lm: info.lm })) { reject(url); throw new Error("el PDF encontrado no parece el programa del 29-N 2026 (descartado)"); }
     if (found) urls[id] = url;
     const rec = { id, url, etag: info.etag || "", lm: info.lm || "", size: info.size || 0, checked: Date.now(), updated: new Date().toISOString().slice(0, 10), pages: ex.pages, chunks: ex.chunks };
     await dbPut(rec); PROGS[id] = rec;
@@ -200,6 +204,17 @@ const PE = (() => {
       pagesUsed.add(r.p); out.push(r); if (out.length >= n) break;
     }
     return out;
+  }
+
+  // Amplía los términos con sus equivalentes en catalán/gallego/euskera cuando la pregunta es de un tema conocido
+  function expand(tokens) {
+    const out = new Set(tokens);
+    if (typeof TOPICS === "undefined" || typeof ML_KW === "undefined") return [...out];
+    TOPICS.forEach(t => {
+      const kws = t.kw.flatMap(k => tokensOf(k));
+      if (tokens.some(w => kws.some(k => w.startsWith(k) || k.startsWith(w)))) (ML_KW[t.id] || []).forEach(k => tokensOf(k).forEach(x => out.add(x)));
+    });
+    return [...out];
   }
 
   // ---------- importar PDFs ya descargados (carpeta Descargas / selector de archivos) ----------
@@ -259,5 +274,5 @@ const PE = (() => {
     await dbPut(rec); PROGS[id] = rec; return rec;
   }
 
-  return { PROGS, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, looksLikeProgram, changed, NATIVE };
+  return { PROGS, expand, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, looksLikeProgram, changed, NATIVE };
 })();

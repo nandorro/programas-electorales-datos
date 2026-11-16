@@ -7,6 +7,48 @@
   "size": 12279932
  },
  {
+  "id": "VOX",
+  "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
+  "pages": 66,
+  "updated": "2026-11-16",
+  "size": 14536418
+ },
+ {
+  "id": "FA",
+  "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
+  "pages": 151,
+  "updated": "2026-11-16",
+  "size": 1139608
+ },
+ {
+  "id": "ERC",
+  "url": "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf",
+  "pages": 48,
+  "updated": "2026-11-16",
+  "size": 300308
+ },
+ {
+  "id": "SALF",
+  "url": "https://www.seacabolafiesta.com/SALF_Contrato_Electoral_29N.pdf",
+  "pages": 40,
+  "updated": "2026-11-16",
+  "size": 19063086
+ },
+ {
+  "id": "AA",
+  "url": "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf",
+  "pages": 134,
+  "updated": "2026-11-16",
+  "size": 1917458
+ },
+ {
+  "id": "PNV",
+  "url": "https://www.eaj-pnv.eus/es/adjuntos-documentos/21765/pdf/programa-electoral-29n",
+  "pages": 43,
+  "updated": "2026-11-16",
+  "size": 509986
+ },
+ {
   "id": "CC",
   "url": "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
   "pages": 23,
@@ -14,10 +56,38 @@
   "size": 69215587
  },
  {
+  "id": "BNG",
+  "url": "https://www.bng.gal/media/bnggaliza/files/2026/11/03/26_bng_xerais_documentos_programa_electoral.pdf",
+  "pages": 91,
+  "updated": "2026-11-16",
+  "size": 1387491
+ },
+ {
+  "id": "FO",
+  "url": "https://frenteobrero.es/documentos/programa-frente-obrero.pdf",
+  "pages": 64,
+  "updated": "2026-11-16",
+  "size": 1202338
+ },
+ {
   "id": "MJ",
   "url": "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf",
   "pages": 95,
   "updated": "2026-11-11",
   "size": 4952507
+ },
+ {
+  "id": "FE",
+  "url": "https://falange.es/wp-content/uploads/2026/11/FEDELASJONS_ProgramaElectoral_29NGenerales2026.pdf",
+  "pages": 60,
+  "updated": "2026-11-16",
+  "size": 19170481
+ },
+ {
+  "id": "PFAC",
+  "url": "https://www.feministasalcongreso.es/wp-content/uploads/2026/11/PROGRAMA_ELECTORAL.pdf",
+  "pages": 10,
+  "updated": "2026-11-16",
+  "size": 841588
  }
 ]
