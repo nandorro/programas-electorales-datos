@@ -41,6 +41,13 @@ button{font:inherit;cursor:pointer}
 .note{font-size:.75rem;color:var(--mut)}
 .hide{display:none}
 .rel{margin-top:8px;font-size:.92rem}
+mark{background:#ffd54f66;color:inherit;border-radius:3px;padding:0 1px}
+.quote a{font-size:.78rem;margin-left:8px}
+.seg{display:inline-flex;border:1px solid #8886;border-radius:18px;overflow:hidden;margin-left:6px;vertical-align:middle}
+.seg button{border:0;background:transparent;color:var(--tx);padding:5px 11px;font-size:.8rem}
+.seg button.on{background:#1D84CE;color:#fff}
+.p.prog{background:#2e7d32;color:#fff;font-size:.8rem}
+#sumline{font-size:.82rem;color:var(--mut);margin:0 0 10px}
 .quote{margin:8px 0;padding:8px 10px;border-left:3px solid #8886;font-size:.9rem;background:#8881;border-radius:0 8px 8px 0}
 .quote small{display:block;color:var(--mut);margin-bottom:2px}
 .sync{width:100%;padding:12px;border:0;border-radius:12px;background:#2e7d32;color:#fff;font-weight:600}
@@ -85,6 +92,7 @@ button{font:inherit;cursor:pointer}
   </div>
   <div class="card">
     <b>3. Respuestas</b>
+    <span class="seg" id="seg" title="Orden de las respuestas"><button data-m="poll" class="on">Encuestas</button><button data-m="rel">Relevancia</button></span>
     <div id="answers" style="margin-top:10px"></div>
   </div>
   <p class="note" id="upd"></p>
@@ -122,7 +130,7 @@ function renderTopics(){
 const STOP=new Set("que qué como cómo cual cuál los las del con por para una uno unos unas sus sobre hacen hara haran hará harán piensa piensan opina quiere quieren van sera será han hay esta este estos son".split(" "));
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9ñ ]/g," ");
 const stem=w=>w.slice(0,5);
-let query="", relTopics=[], qTokens=[], qFree=false, qNeed=1;
+let query="", relTopics=[], qTokens=[], qFree=false, qNeed=1, sortMode="poll";
 function setTopic(id,q){
   topic=id; query=q||""; relTopics=[]; qFree=!!q;
   const tt=TOPICS.find(x=>x.id===id);
@@ -172,6 +180,12 @@ function renderParties(){
     renderParties(); renderAnswers();
   };
   box.appendChild(all);
+  const withP=shown.filter(p=>PE.PROGS[p.id]);
+  const wp=document.createElement("button");
+  wp.className="p prog"+(withP.length&&withP.every(p=>selected.has(p.id))&&selected.size===withP.length?" on":""); wp.textContent="📄 PROGRAMA";
+  wp.title=withP.length+" partidos con programa cargado";
+  wp.onclick=()=>{ const same=withP.length&&withP.every(p=>selected.has(p.id))&&selected.size===withP.length; selected.clear(); if(!same)withP.forEach(p=>selected.add(p.id)); renderParties(); renderAnswers(); };
+  box.appendChild(wp);
   shown.forEach(p => {
     const b = document.createElement("button");
     b.className = "p" + (selected.has(p.id)?" on":"");
@@ -185,26 +199,48 @@ function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 function tl(id){return TOPICS.find(t=>t.id===id).label}
 function passages(pid){
   const pr=PE.PROGS[pid]; if(!pr||!qTokens.length)return[];
-  return PE.search(pr,qTokens,3,qFree?{need:qNeed}:{need:1,minSc:4});
+  return PE.search(pr,qTokens,3,{need:qFree?qNeed:2});
 }
-function quote(x){return `<div class="quote"><small>Programa oficial · pág. ${x.p}</small>«${esc(x.t)}»</div>`}
+// Recorta alrededor de lo buscado (sin cortar palabras) y resalta los términos
+function snippet(t,max){
+  max=max||420;
+  const n=" "+PE.norm(t);
+  if(n.length-1!==t.length)return esc(t.length>max?t.slice(0,max).replace(/\s+\S*$/,"")+"…":t);
+  const R=[];
+  qTokens.forEach(w=>{let i=-1;while((i=n.indexOf(" "+w,i+1))>=0){let j=i+1;while(j<n.length&&/[a-z0-9ñ]/.test(n[j]))j++;R.push([i,j-1])}});
+  R.sort((a,b)=>a[0]-b[0]);
+  const M=[];R.forEach(r=>{const l=M[M.length-1];if(l&&r[0]<=l[1]+1)l[1]=Math.max(l[1],r[1]);else M.push(r.slice())});
+  let s=M.length?Math.max(0,M[0][0]-140):0,e=Math.min(t.length,s+max);
+  if(s>0){const k=t.indexOf(" ",s);if(k>0&&k<s+40)s=k+1}
+  if(e<t.length){const k=t.lastIndexOf(" ",e);if(k>s+60)e=k}
+  let out=s>0?"…":"",pos=s;
+  M.forEach(m=>{const a=Math.max(m[0],s),z=Math.min(m[1],e);if(z<=a||a<pos)return;out+=esc(t.slice(pos,a))+"<mark>"+esc(t.slice(a,z))+"</mark>";pos=z});
+  return out+esc(t.slice(pos,e))+(e<t.length?"…":"");
+}
+function quote(x,pid){
+  const u=PROGRAM_URLS[pid]&&!(PE.PROGS[pid]&&PE.PROGS[pid].source==="descargas")?PROGRAM_URLS[pid]:"";
+  return `<div class="quote"><small>Programa oficial · pág. ${x.p}${u?` <a class="link" href="${u}#page=${x.p}" target="_blank" rel="noopener">Abrir PDF en esta página ↗</a>`:""}</small>«${snippet(x.t)}»</div>`;
+}
 function renderAnswers(){
   const box=$("answers");
   if(!topic){box.innerHTML='<span class="note">Elige un tema o escribe una pregunta y pulsa Ir.</span>';return}
   const list=shown.filter(p=>selected.has(p.id));
   if(!list.length){box.innerHTML='<span class="note">Pulsa uno o varios partidos (o ALL).</span>';return}
-  box.innerHTML=list.map(p=>{
+  const rows=list.map(p=>({p,ps:passages(p.id)}));
+  if(sortMode==="rel")rows.sort((a,b)=>(b.ps.length?1:0)-(a.ps.length?1:0)||((b.ps.length?b.ps[0].sc:0)-(a.ps.length?a.ps[0].sc:0)));
+  const withProg=rows.filter(r=>PE.PROGS[r.p.id]).length, hits=rows.filter(r=>r.ps.length).length;
+  const sum=`<p id="sumline">${rows.length} partido(s) seleccionados · ${withProg} con programa cargado · ${hits} lo tratan en su programa${withProg<rows.length?" (los demás aún no tienen programa en la app)":""}.</p>`;
+  box.innerHTML=sum+rows.map(({p,ps})=>{
     const main=(ANSWERS[topic]&&ANSWERS[topic][p.id])||"";
-    const ps=passages(p.id);
     const rel=relTopics.filter(t=>ANSWERS[t]&&ANSWERS[t][p.id]);
     const first=rel[0], more=rel.slice(1);
     let inline="";
-    if(ps.length)inline+=`<span class="lbl">📄 Lo que dice su programa</span>`+quote(ps[0])+(main?`<span class="lbl">Resumen general</span>`:"");
+    if(ps.length)inline+=`<span class="lbl">📄 Lo que dice su programa</span>`+quote(ps[0],p.id)+(main?`<span class="lbl">Resumen general</span>`:"");
     inline+=esc(main);
     if(!main&&!ps.length)inline+=`<span class="note">${PE.PROGS[p.id]?"Su programa no menciona estas palabras.":"Este partido aún no tiene programa cargado en la app (puede que no lo haya publicado todavía). Pulsa «Actualizar datos y programas» o impórtalo con «Buscar programas en Descargas»."}</span>`;
     if(first)inline+=`<div class="rel"><i>También, sobre ${tl(first)}:</i> ${esc(ANSWERS[first][p.id])}</div>`;
     let hidden="";
-    ps.slice(1).forEach(x=>hidden+=quote(x));
+    ps.slice(1).forEach(x=>hidden+=quote(x,p.id));
     more.forEach(t=>hidden+=`<div class="rel"><i>Sobre ${tl(t)}:</i> ${esc(ANSWERS[t][p.id])}</div>`);
     if(PROGRAM_URLS[p.id])hidden+=`<a class="link" href="${PROGRAM_URLS[p.id]}" target="_blank">Ver programa oficial (PDF)</a>`;
     const long=main.length>260&&!first&&!ps.length;
@@ -214,6 +250,9 @@ function renderAnswers(){
     return `<div class="ans" style="border-color:${p.color}"><b>${p.id} · ${p.name}${badge(p.id)}</b><span class="short">${shortTxt}</span>${tail}<div class="hid hide">${hidden}</div>${hasMore?`<button class="link" onclick="toggleMore(this)">Leer más</button>`:""}</div>`;
   }).join("");
 }
+document.querySelectorAll("#seg button").forEach(b=>b.onclick=()=>{
+  sortMode=b.dataset.m; document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on",x===b)); renderAnswers();
+});
 function toggleMore(btn){
   const a=btn.parentElement, open=btn.textContent==="Leer más";
   const f=a.querySelector(".full"), s=a.querySelector(".short");
@@ -265,7 +304,7 @@ $("sync").onclick=async()=>{
     say(`\nListo: ${n.new} nuevos, ${n.updated} actualizados, ${n.same} sin cambios, ${n.none} sin publicar${n.err?`, ${n.err} con error`:""}.`);
   }catch(e){ say("Error: "+(e&&e.message||e)); }
   syncing=false; btn.disabled=false; btn.textContent="🔄 Actualizar datos y programas";
-  showProgs(); renderAnswers();
+  showProgs(); renderParties(); renderAnswers();
 };
 function askParty(name,cands){
   return new Promise(res=>{
@@ -305,11 +344,11 @@ $("imp").onclick=async()=>{
     }
     if(sel.files.length)say(`\nListo: ${ok} programa(s) importado(s).`);
   }catch(e){ say("Error: "+(e&&e.message||e)); }
-  syncing=false; $("imp").disabled=false; showProgs(); renderAnswers();
+  syncing=false; $("imp").disabled=false; showProgs(); renderParties(); renderAnswers();
 };
 if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&!PE.NATIVE){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 renderTopics();
-PE.load().then(()=>{showProgs();renderAnswers()});
+PE.load().then(()=>{showProgs();renderParties();renderAnswers()});
 updateData();
 </script>
 </body>

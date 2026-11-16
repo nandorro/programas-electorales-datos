@@ -186,21 +186,38 @@ const PE = (() => {
   }
 
   // ---------- búsqueda en el texto del programa ----------
-  // opts.need: nº mínimo de términos distintos; opts.minSc: puntuación mínima
+  // Búsqueda con pesos tipo BM25: las palabras poco frecuentes en ese programa pesan más y las comunes ("administración") casi nada.
+  // opts.need: nº mínimo de términos distintos que debe contener el fragmento.
+  function stats(prog) {
+    if (prog._st) return prog._st;
+    let tot = 0;
+    prog.chunks.forEach(c => { c._n = c._n || (" " + norm(c.t)); tot += c._n.length; });
+    return (prog._st = { N: prog.chunks.length, avg: tot / Math.max(1, prog.chunks.length), df: {} });
+  }
+  function count(t, key, cap) { let i = -1, k = 0; while (k < cap && (i = t.indexOf(key, i + 1)) >= 0) k++; return k; }
   function search(prog, tokens, n = 3, opts = {}) {
     if (!prog || !tokens.length) return [];
-    const need = opts.need || Math.max(1, Math.ceil(tokens.length * 0.4)), minSc = opts.minSc || 3;
-    const res = [];
-    for (const c of prog.chunks) {
-      const t = c._n || (c._n = " " + norm(c.t));
-      let sc = 0, dist = 0;
-      for (const w of tokens) { const key = " " + w; let i = -1, k = 0; while (k < 3 && (i = t.indexOf(key, i + 1)) >= 0) k++; if (k) { dist++; sc += k; } }
-      if (dist >= need) res.push({ p: c.p, t: c.t, sc: sc + dist * 2, dist });
+    const st = stats(prog), need = opts.need || Math.max(1, Math.ceil(tokens.length * 0.4));
+    const idf = {};
+    for (const w of tokens) {
+      if (st.df[w] === undefined) st.df[w] = prog.chunks.reduce((a, c) => a + (c._n.indexOf(" " + w) >= 0 ? 1 : 0), 0);
+      idf[w] = Math.log(1 + (st.N - st.df[w] + 0.5) / (st.df[w] + 0.5));
     }
+    const k1 = 1.2, bb = 0.75, res = [];
+    for (const c of prog.chunks) {
+      let sc = 0, dist = 0;
+      for (const w of tokens) {
+        const tf = count(c._n, " " + w, 6); if (!tf) continue;
+        dist++; sc += idf[w] * (tf * (k1 + 1)) / (tf + k1 * (1 - bb + bb * c._n.length / st.avg));
+      }
+      if (dist >= need) res.push({ p: c.p, t: c.t, sc, dist });
+    }
+    res.sort((a, b) => b.dist - a.dist || b.sc - a.sc);
+    if (!res.length) return [];
+    const top = res.slice().sort((a, b) => b.sc - a.sc)[0].sc, out = [], pagesUsed = new Set();
     res.sort((a, b) => b.sc - a.sc);
-    const out = [], pagesUsed = new Set();
     for (const r of res) {
-      if (r.sc < minSc || pagesUsed.has(r.p)) continue;
+      if (r.sc < top * 0.45 || pagesUsed.has(r.p)) continue;     // descarta lo claramente menos relevante que lo mejor
       pagesUsed.add(r.p); out.push(r); if (out.length >= n) break;
     }
     return out;
