@@ -7,6 +7,13 @@
   "size": 12279932
  },
  {
+  "id": "PSOE",
+  "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+  "pages": 114,
+  "updated": "2026-11-17",
+  "size": 11983706
+ },
+ {
   "id": "VOX",
   "url": "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
   "pages": 66,
@@ -17,15 +24,15 @@
   "id": "FA",
   "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
   "pages": 151,
-  "updated": "2026-11-16",
-  "size": 1139608
+  "updated": "2026-11-17",
+  "size": 1138847
  },
  {
   "id": "ERC",
   "url": "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf",
   "pages": 48,
-  "updated": "2026-11-16",
-  "size": 300308
+  "updated": "2026-11-17",
+  "size": 300005
  },
  {
   "id": "SALF",
@@ -66,8 +73,15 @@
   "id": "FO",
   "url": "https://frenteobrero.es/documentos/programa-frente-obrero.pdf",
   "pages": 64,
-  "updated": "2026-11-16",
+  "updated": "2026-11-17",
   "size": 1202338
+ },
+ {
+  "id": "PACMA",
+  "url": "https://pacma.es/wp-content/uploads/2026/11/PE_GENERALES_29N26.pdf",
+  "pages": 82,
+  "updated": "2026-11-17",
+  "size": 1153511
  },
  {
   "id": "MJ",
@@ -85,9 +99,9 @@
  },
  {
   "id": "PFAC",
-  "url": "https://www.feministasalcongreso.es/wp-content/uploads/2026/11/PROGRAMA_ELECTORAL.pdf",
-  "pages": 10,
-  "updated": "2026-11-16",
-  "size": 841588
+  "url": "https://www.feministasalcongreso.es/wp-content/uploads/2026/11/PROGRAMA-ELECTORAL_2026.pdf",
+  "pages": 170,
+  "updated": "2026-11-17",
+  "size": 2435598
  }
 ]

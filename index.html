@@ -303,6 +303,7 @@ $("sync").onclick=async()=>{
     }
     say(`\nListo: ${n.new} nuevos, ${n.updated} actualizados, ${n.same} sin cambios, ${n.none} sin publicar${n.err?`, ${n.err} con error`:""}.`);
   }catch(e){ say("Error: "+(e&&e.message||e)); }
+  try{localStorage.setItem("pe_auto",String(Date.now()))}catch(e){}
   syncing=false; btn.disabled=false; btn.textContent="🔄 Actualizar datos y programas";
   showProgs(); renderParties(); renderAnswers();
 };
@@ -348,7 +349,17 @@ $("imp").onclick=async()=>{
 };
 if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&!PE.NATIVE){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 renderTopics();
-PE.load().then(()=>{showProgs();renderParties();renderAnswers()});
+async function autoUpdate(force){
+  let last=0; try{last=+localStorage.getItem("pe_auto")||0}catch(e){}
+  if(navigator.onLine===false||(!force&&Date.now()-last<3*36e5))return;
+  try{
+    const done=await PE.syncSiteAll(PROGRAM_URLS);
+    try{localStorage.setItem("pe_auto",String(Date.now()))}catch(e){}
+    if(done.length){showProgs();renderParties();renderAnswers();$("upd").textContent+=" 📚 Programas actualizados: "+done.join(", ")+"."}
+  }catch(e){}
+}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}   // pide que el sistema no borre los programas guardados
+PE.load().then(()=>PE.loadSeed()).then(()=>{showProgs();renderParties();renderAnswers();return autoUpdate()});
 updateData();
 </script>
 </body>

@@ -95,9 +95,9 @@ const PE = (() => {
   }
   function changed(prev, url, info) {
     if (!prev || prev.url !== url) return true;
-    if (info.etag && info.etag !== prev.etag) return true;
-    if (info.lm && info.lm !== prev.lm) return true;
-    if (info.size && info.size !== prev.size) return true;
+    if (prev.lm && info.lm) return prev.lm !== info.lm || (!!info.size && !!prev.size && info.size !== prev.size);
+    if (info.etag && prev.etag && info.etag !== prev.etag) return true;
+    if (info.size && prev.size && info.size !== prev.size) return true;
     if (!info.etag && !info.lm && !info.size) return Date.now() - (prev.checked || 0) > 7 * 864e5;
     return false;
   }
@@ -154,16 +154,45 @@ const PE = (() => {
     if (!r.ok) throw new Error("HTTP " + r.status);
     const rec = await r.json(); const prev = PROGS[id];
     if (rec.url) urls[id] = rec.url;
-    if (prev && prev.etag === rec.etag && prev.updated === rec.updated && prev.size === rec.size) { log(`${id}: sin cambios`); return "same"; }
+    const nuevo = !prev || (rec.updated || "") > (prev.updated || "") || ((rec.updated || "") === (prev.updated || "") && prev.source !== "descargas" && (prev.etag !== rec.etag || prev.size !== rec.size));
+    if (!nuevo) { log(`${id}: sin cambios`); return "same"; }
     rec.id = id; rec.checked = Date.now();
     await dbPut(rec); PROGS[id] = rec;
     log(`${id}: ✅ programa guardado (${rec.pages} páginas)`);
     return prev ? "updated" : "new";
   }
 
+  // Lista de programas publicados en la copia en línea y sincroniza solo esos (rápido, sin PDFs)
+  async function syncSiteAll(urls) {
+    const base = (typeof REMOTE_URL === "string" && REMOTE_URL ? REMOTE_URL : location.href).replace(/[^/]*$/, "");
+    let idx; const r = await fetch(base + "programas/index.json?t=" + Date.now()); if (!r.ok) throw new Error("HTTP " + r.status);
+    idx = await r.json(); const changedIds = [];
+    for (const m of idx) {
+      try { const x = await syncFromSite({ id: m.id }, urls, () => {}); if (x === "new" || x === "updated") changedIds.push(m.id); } catch (e) { if (/sin conexión/.test(e.message)) throw e; }
+    }
+    return changedIds;
+  }
+  // Programas incluidos dentro del APK (carpeta semilla/): disponibles desde el primer arranque, sin buscar ni descargar
+  async function loadSeed() {
+    let idx; try { const r = await fetch("semilla/index.json"); if (!r.ok) return 0; idx = await r.json(); } catch (e) { return 0; }
+    let n = 0;
+    for (const m of idx) {
+      const prev = PROGS[m.id];
+      if (prev && (prev.updated || "") >= (m.updated || "")) continue;      // lo que ya hay es igual o más reciente
+      try {
+        const r = await fetch("semilla/" + m.id + ".json"); if (!r.ok) continue;
+        const rec = await r.json(); rec.id = m.id; rec.checked = Date.now(); rec.seed = true;
+        await dbPut(rec); PROGS[m.id] = rec; n++;
+      } catch (e) {}
+    }
+    return n;
+  }
+
   // ---------- sincronizar un partido ----------
   async function syncParty(p, urls, pages, log) {
     if (!NATIVE) return syncFromSite(p, urls, log);
+    let pre = null; try { pre = await syncFromSite(p, urls, () => {}); } catch (e) {}
+    if (pre === "new" || pre === "updated") log(`${p.id}: ✅ descargado de la copia en línea`);
     const id = p.id; let url = urls[id], found = null;
     if (!url && pages[id]) {
       try { url = await discover(pages[id]); if (url && rejected().includes(url)) { log(`${id}: el PDF de su web no parece el programa de 2026 (ignorado)`); return "none"; } if (url) { found = url; log(`${id}: posible programa encontrado en su web`); } }
@@ -171,7 +200,7 @@ const PE = (() => {
     }
     if (!url) { log(`${id}: ${pages[id] ? "programa aún no publicado" : "sin web oficial configurada"}`); return "none"; }
     const prev = PROGS[id], info = await remoteInfo(url);
-    if (!changed(prev, url, info)) { prev.checked = Date.now(); await dbPut(prev); log(`${id}: sin cambios`); return "same"; }
+    if (!changed(prev, url, info)) { prev.checked = Date.now(); await dbPut(prev); if (pre === "new" || pre === "updated") return pre; log(`${id}: sin cambios`); return "same"; }
     log(`${id}: descargando programa…`);
     const src = await download(id, url, (b, t) => log(`${id}: descargando ${(b / 1048576).toFixed(1)}${t ? " / " + (t / 1048576).toFixed(1) : ""} MB`, true));
     log(`${id}: leyendo el texto…`, true);
@@ -291,5 +320,5 @@ const PE = (() => {
     await dbPut(rec); PROGS[id] = rec; return rec;
   }
 
-  return { PROGS, expand, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, looksLikeProgram, changed, NATIVE };
+  return { PROGS, loadSeed, syncSiteAll, syncFromSite, expand, pick, readFile, detectParty, saveImported, load, syncParty, search, tokensOf, norm, stem, chunkPage, findProgramLink, looksLikeProgram, changed, NATIVE };
 })();
