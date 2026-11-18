@@ -52,6 +52,7 @@ async function extract(buf) {
       if (!url) { resumen.push(`${id}: ${(data.programPages || {})[id] ? "programa aún no publicado" : "sin web oficial configurada"}`); if (prev) index.push(meta(id, prev)); continue; }
       const h = await get(url, "HEAD", 30000).catch(() => null);
       const info = h && h.ok ? { etag: h.headers.get("etag") || "", lm: h.headers.get("last-modified") || "", size: +h.headers.get("content-length") || 0 } : {};
+      if (!info.etag && !info.lm) { delete info.size; }   // HEAD no fiable: solo cuenta la revisión semanal
       if (prev && !PE.changed({ url: prev.url, etag: prev.etag, lm: prev.lm, size: prev.size, checked: Date.now() }, url, info)) {
         resumen.push(`${id}: sin cambios`); index.push(meta(id, prev)); continue;
       }

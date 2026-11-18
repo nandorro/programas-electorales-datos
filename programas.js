@@ -90,16 +90,17 @@ const PE = (() => {
     try {
       const r = await http(url, "HEAD");
       if (r.status >= 400) return {};
+      if (!r.headers["etag"] && !r.headers["last-modified"]) return {};   // HEAD no fiable (p. ej. psoe.es responde otra cosa): se ignora
       return { etag: r.headers["etag"], lm: r.headers["last-modified"], size: +r.headers["content-length"] || 0 };
     } catch (e) { return {}; }
   }
+  const ne = e => String(e || "").replace(/^W\//, "").replace(/"/g, "");     // un ETag débil (W/"x") y uno fuerte ("x") son el mismo
   function changed(prev, url, info) {
     if (!prev || prev.url !== url) return true;
-    if (prev.lm && info.lm) return prev.lm !== info.lm || (!!info.size && !!prev.size && info.size !== prev.size);
-    if (info.etag && prev.etag && info.etag !== prev.etag) return true;
-    if (info.size && prev.size && info.size !== prev.size) return true;
-    if (!info.etag && !info.lm && !info.size) return Date.now() - (prev.checked || 0) > 7 * 864e5;
-    return false;
+    if (prev.lm && info.lm) return prev.lm !== info.lm;                              // 1º la fecha de modificación
+    if (prev.etag && info.etag) return ne(info.etag) !== ne(prev.etag);              // 2º el ETag (débil o fuerte es lo mismo)
+    if (info.size && prev.size && !prev.etag && !prev.lm) return info.size !== prev.size;   // 3º el tamaño, solo si no hay nada mejor (con compresión varía)
+    return Date.now() - (prev.checked || 0) > 7 * 864e5;                             // sin datos comparables: revisión semanal
   }
 
   // ---------- extracción y troceado ----------
