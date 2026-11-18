@@ -272,15 +272,18 @@ let ML_KW = {
 };
 const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
 // Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
-const DATA_VERSION = 7;
+const DATA_VERSION = 8;
 const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
 const PROGRAM_URLS = {
   PP: "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
   PSOE: "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
+  POD: "https://podemos.info/wp-content/uploads/2026/11/29N-programa-Podemos.-Paz-casa-y-trabajo.pdf",
   VOX: "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf",
   FA: "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
   ERC: "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf",
   SALF: "https://www.seacabolafiesta.com/SALF_Contrato_Electoral_29N.pdf",
+  CFV: "https://frontvalencia.org/programa-compromis-front-valencia.pdf",
+  BIL: "https://www.naiz.eus/media/asset_publics/resources/001/388/034/original/posibleegin-programa-cas.pdf",   // alojado por Naiz; es el que enlaza su noticia del programa de EH Bildu (16-nov)
   AA: "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf",
   PNV: "https://www.eaj-pnv.eus/es/adjuntos-documentos/21765/pdf/programa-electoral-29n",
   CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
@@ -298,5 +301,5 @@ const PROGRAM_PAGES = {
   AA: "https://adelanteandalucia.org", CFV: "https://compromis.net", PACMA: "https://pacma.es",
   FO: "https://frenteobrero.es", PCTE: "https://pcte.es", FE: "https://www.falange.es",
   ALH: "https://alhora.cat", IE: "https://iustitiaeuropa.es", SYA: "https://soriaya.org",
-  PFAC: "https://feministasalcongreso.es", FA: "https://frenteamplio.info"
+  PFAC: "https://feministasalcongreso.es", CFV: "https://frontvalencia.org", FA: "https://frenteamplio.info"
 };  // id partido -> url del programa oficial

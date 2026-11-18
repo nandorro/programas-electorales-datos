@@ -10,7 +10,7 @@
   "id": "PSOE",
   "url": "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf",
   "pages": 114,
-  "updated": "2026-11-17",
+  "updated": "2026-11-18",
   "size": 11983706
  },
  {
@@ -24,7 +24,7 @@
   "id": "FA",
   "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
   "pages": 151,
-  "updated": "2026-11-17",
+  "updated": "2026-11-18",
   "size": 1138847
  },
  {
@@ -42,11 +42,32 @@
   "size": 19063086
  },
  {
+  "id": "POD",
+  "url": "https://podemos.info/wp-content/uploads/2026/11/29N-programa-Podemos.-Paz-casa-y-trabajo.pdf",
+  "pages": 141,
+  "updated": "2026-11-18",
+  "size": 1830035
+ },
+ {
+  "id": "CFV",
+  "url": "https://frontvalencia.org/programa-compromis-front-valencia.pdf",
+  "pages": 57,
+  "updated": "2026-11-18",
+  "size": 4503080
+ },
+ {
   "id": "AA",
   "url": "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf",
   "pages": 134,
   "updated": "2026-11-16",
   "size": 1917458
+ },
+ {
+  "id": "BIL",
+  "url": "https://www.naiz.eus/media/asset_publics/resources/001/388/034/original/posibleegin-programa-cas.pdf",
+  "pages": 30,
+  "updated": "2026-11-18",
+  "size": 571442
  },
  {
   "id": "PNV",

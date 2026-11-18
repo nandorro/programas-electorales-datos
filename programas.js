@@ -206,7 +206,7 @@ const PE = (() => {
     log(`${id}: leyendo el texto…`, true);
     const ex = await extract(src, (i, n) => log(`${id}: leyendo página ${i}/${n}`, true));
     if (!ex.chunks.length) throw new Error("el PDF no contiene texto legible");
-    if (!looksLikeProgram(ex.chunks, ex.pages, { url, lm: info.lm })) { reject(url); throw new Error("el PDF encontrado no parece el programa del 29-N 2026 (descartado)"); }
+    if (found && !looksLikeProgram(ex.chunks, ex.pages, { url, lm: info.lm })) { reject(url); throw new Error("el PDF encontrado no parece el programa del 29-N 2026 (descartado)"); }
     if (found) urls[id] = url;
     const rec = { id, url, etag: info.etag || "", lm: info.lm || "", size: info.size || 0, checked: Date.now(), updated: new Date().toISOString().slice(0, 10), pages: ex.pages, chunks: ex.chunks };
     await dbPut(rec); PROGS[id] = rec;
