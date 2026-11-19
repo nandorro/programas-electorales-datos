@@ -272,7 +272,7 @@ let ML_KW = {
 };
 const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
 // Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
-const DATA_VERSION = 8;
+const DATA_VERSION = 9;
 const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
 const PROGRAM_URLS = {
   PP: "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
@@ -283,14 +283,18 @@ const PROGRAM_URLS = {
   ERC: "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf",
   SALF: "https://www.seacabolafiesta.com/SALF_Contrato_Electoral_29N.pdf",
   CFV: "https://frontvalencia.org/programa-compromis-front-valencia.pdf",
-  BIL: "https://www.naiz.eus/media/asset_publics/resources/001/388/034/original/posibleegin-programa-cas.pdf",   // alojado por Naiz; es el que enlaza su noticia del programa de EH Bildu (16-nov)
+  BIL: "https://posibleegin.ehbildu.eus/wp-content/uploads/2026/11/PROGRAMA-CAS.pdf",
   AA: "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf",
   PNV: "https://www.eaj-pnv.eus/es/adjuntos-documentos/21765/pdf/programa-electoral-29n",
   CC: "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
   BNG: "https://www.bng.gal/media/bnggaliza/files/2026/11/03/26_bng_xerais_documentos_programa_electoral.pdf",
   FO: "https://frenteobrero.es/documentos/programa-frente-obrero.pdf",
   FE: "https://falange.es/wp-content/uploads/2026/11/FEDELASJONS_ProgramaElectoral_29NGenerales2026.pdf",
-  MJ: "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf"
+  MJ: "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf",
+  UPC: "https://cdn.rtvc.es/archivos/2026/11/Programa-electoral-UPC.pdf",   // copia alojada por RTVC (radiotelevisión pública canaria)
+  EXI: "https://teruelexiste.info/wp-content/uploads/2026/11/Programa_Teruel_Existe_Completo_29N.pdf",   // programa de Teruel Existe, integrante de Coalición Existe
+  SYA: "https://soriaya.org/wp-content/uploads/2026/11/ProgramaGenerales_26.pdf",   // 1 página con sus exigencias
+  IE: "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf"   // su «contrato electoral»
 };
 // Webs oficiales donde la app busca sola el PDF del programa si aún no hay URL directa.
 const PROGRAM_PAGES = {
@@ -301,5 +305,5 @@ const PROGRAM_PAGES = {
   AA: "https://adelanteandalucia.org", CFV: "https://compromis.net", PACMA: "https://pacma.es",
   FO: "https://frenteobrero.es", PCTE: "https://pcte.es", FE: "https://www.falange.es",
   ALH: "https://alhora.cat", IE: "https://iustitiaeuropa.es", SYA: "https://soriaya.org",
-  PFAC: "https://feministasalcongreso.es", CFV: "https://frontvalencia.org", FA: "https://frenteamplio.info"
+  PFAC: "https://feministasalcongreso.es", CFV: "https://frontvalencia.org", EXI: "https://teruelexiste.info", FA: "https://frenteamplio.info"
 };  // id partido -> url del programa oficial

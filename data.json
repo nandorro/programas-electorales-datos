@@ -1,6 +1,6 @@
 {
- "version": 8,
- "updated": "2026-11-18",
+ "version": 9,
+ "updated": "2026-11-19",
  "parties": [
   {
    "id": "PP",
@@ -654,14 +654,18 @@
   "ERC": "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf",
   "SALF": "https://www.seacabolafiesta.com/SALF_Contrato_Electoral_29N.pdf",
   "CFV": "https://frontvalencia.org/programa-compromis-front-valencia.pdf",
-  "BIL": "https://www.naiz.eus/media/asset_publics/resources/001/388/034/original/posibleegin-programa-cas.pdf",
+  "BIL": "https://posibleegin.ehbildu.eus/wp-content/uploads/2026/11/PROGRAMA-CAS.pdf",
   "AA": "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf",
   "PNV": "https://www.eaj-pnv.eus/es/adjuntos-documentos/21765/pdf/programa-electoral-29n",
   "CC": "https://coalicioncanaria.org/wp-content/uploads/2026/11/CCA-26-Programa_Electoral-29NOV.pdf",
   "BNG": "https://www.bng.gal/media/bnggaliza/files/2026/11/03/26_bng_xerais_documentos_programa_electoral.pdf",
   "FO": "https://frenteobrero.es/documentos/programa-frente-obrero.pdf",
   "FE": "https://falange.es/wp-content/uploads/2026/11/FEDELASJONS_ProgramaElectoral_29NGenerales2026.pdf",
-  "MJ": "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf"
+  "MJ": "https://www.porunmundomasjusto.es/wp-content/uploads/2026/11/Castellano.pdf",
+  "UPC": "https://cdn.rtvc.es/archivos/2026/11/Programa-electoral-UPC.pdf",
+  "EXI": "https://teruelexiste.info/wp-content/uploads/2026/11/Programa_Teruel_Existe_Completo_29N.pdf",
+  "SYA": "https://soriaya.org/wp-content/uploads/2026/11/ProgramaGenerales_26.pdf",
+  "IE": "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf"
  },
  "programPages": {
   "PP": "https://www.pp.es",
@@ -685,6 +689,7 @@
   "IE": "https://iustitiaeuropa.es",
   "SYA": "https://soriaya.org",
   "PFAC": "https://feministasalcongreso.es",
+  "EXI": "https://teruelexiste.info",
   "FA": "https://frenteamplio.info"
  },
  "mlKw": {

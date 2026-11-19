@@ -64,9 +64,9 @@
  },
  {
   "id": "BIL",
-  "url": "https://www.naiz.eus/media/asset_publics/resources/001/388/034/original/posibleegin-programa-cas.pdf",
+  "url": "https://posibleegin.ehbildu.eus/wp-content/uploads/2026/11/PROGRAMA-CAS.pdf",
   "pages": 30,
-  "updated": "2026-11-18",
+  "updated": "2026-11-19",
   "size": 571442
  },
  {
@@ -117,6 +117,34 @@
   "pages": 60,
   "updated": "2026-11-16",
   "size": 19170481
+ },
+ {
+  "id": "UPC",
+  "url": "https://cdn.rtvc.es/archivos/2026/11/Programa-electoral-UPC.pdf",
+  "pages": 19,
+  "updated": "2026-11-19",
+  "size": 594069
+ },
+ {
+  "id": "EXI",
+  "url": "https://teruelexiste.info/wp-content/uploads/2026/11/Programa_Teruel_Existe_Completo_29N.pdf",
+  "pages": 15,
+  "updated": "2026-11-19",
+  "size": 179097
+ },
+ {
+  "id": "SYA",
+  "url": "https://soriaya.org/wp-content/uploads/2026/11/ProgramaGenerales_26.pdf",
+  "pages": 1,
+  "updated": "2026-11-19",
+  "size": 405932
+ },
+ {
+  "id": "IE",
+  "url": "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf",
+  "pages": 28,
+  "updated": "2026-11-19",
+  "size": 4962917
  },
  {
   "id": "PFAC",
