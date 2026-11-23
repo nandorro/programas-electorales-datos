@@ -272,7 +272,7 @@ let ML_KW = {
 };
 const REMOTE_URL = "https://nandorro.github.io/programas-electorales-datos/data.json";
 // Versión de los datos incluidos en la app y estado de cada partido: "resumen" (provisional) o "programa" (basado en programa oficial)
-const DATA_VERSION = 9;
+const DATA_VERSION = 10;
 const SOURCE_STATUS = {}; // id partido -> "programa" | "resumen" (por defecto "resumen")
 const PROGRAM_URLS = {
   PP: "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf",
@@ -294,7 +294,9 @@ const PROGRAM_URLS = {
   UPC: "https://cdn.rtvc.es/archivos/2026/11/Programa-electoral-UPC.pdf",   // copia alojada por RTVC (radiotelevisión pública canaria)
   EXI: "https://teruelexiste.info/wp-content/uploads/2026/11/Programa_Teruel_Existe_Completo_29N.pdf",   // programa de Teruel Existe, integrante de Coalición Existe
   SYA: "https://soriaya.org/wp-content/uploads/2026/11/ProgramaGenerales_26.pdf",   // 1 página con sus exigencias
-  IE: "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf"   // su «contrato electoral»
+  IE: "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf",   // su «contrato electoral»
+  JXC: "https://www.tualcentre.cat/app/uploads/2026/11/PROGRAMA-ELECTORAL_JUNTS_29N.pdf",   // «Catalunya al centre» (web de campaña de Junts), 90 págs, catalán
+  ARA: "https://media.timtul.com/media/web_mespermallorca/ProgramaElectoral29N_Corregit%20(1)_20261117173133.pdf"   // versión corregida (17-nov) publicada en aramesfrontampli.cat, 9 págs, catalán
 };
 // Webs oficiales donde la app busca sola el PDF del programa si aún no hay URL directa.
 const PROGRAM_PAGES = {
@@ -305,5 +307,5 @@ const PROGRAM_PAGES = {
   AA: "https://adelanteandalucia.org", CFV: "https://compromis.net", PACMA: "https://pacma.es",
   FO: "https://frenteobrero.es", PCTE: "https://pcte.es", FE: "https://www.falange.es",
   ALH: "https://alhora.cat", IE: "https://iustitiaeuropa.es", SYA: "https://soriaya.org",
-  PFAC: "https://feministasalcongreso.es", CFV: "https://frontvalencia.org", EXI: "https://teruelexiste.info", FA: "https://frenteamplio.info"
+  PFAC: "https://feministasalcongreso.es", CFV: "https://frontvalencia.org", EXI: "https://teruelexiste.info", ARA: "https://aramesfrontampli.cat", FA: "https://frenteamplio.info"
 };  // id partido -> url del programa oficial

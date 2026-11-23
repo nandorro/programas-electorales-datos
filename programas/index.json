@@ -24,7 +24,7 @@
   "id": "FA",
   "url": "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf",
   "pages": 151,
-  "updated": "2026-11-18",
+  "updated": "2026-11-23",
   "size": 1138847
  },
  {
@@ -63,6 +63,13 @@
   "size": 1917458
  },
  {
+  "id": "JXC",
+  "url": "https://www.tualcentre.cat/app/uploads/2026/11/PROGRAMA-ELECTORAL_JUNTS_29N.pdf",
+  "pages": 90,
+  "updated": "2026-11-23",
+  "size": 1355756
+ },
+ {
   "id": "BIL",
   "url": "https://posibleegin.ehbildu.eus/wp-content/uploads/2026/11/PROGRAMA-CAS.pdf",
   "pages": 30,
@@ -93,9 +100,9 @@
  {
   "id": "FO",
   "url": "https://frenteobrero.es/documentos/programa-frente-obrero.pdf",
-  "pages": 64,
-  "updated": "2026-11-17",
-  "size": 1202338
+  "pages": 67,
+  "updated": "2026-11-23",
+  "size": 3140187
  },
  {
   "id": "PACMA",
@@ -138,6 +145,13 @@
   "pages": 1,
   "updated": "2026-11-19",
   "size": 405932
+ },
+ {
+  "id": "ARA",
+  "url": "https://media.timtul.com/media/web_mespermallorca/ProgramaElectoral29N_Corregit%20(1)_20261117173133.pdf",
+  "pages": 9,
+  "updated": "2026-11-23",
+  "size": 2929276
  },
  {
   "id": "IE",

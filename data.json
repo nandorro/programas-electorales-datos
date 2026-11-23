@@ -1,6 +1,6 @@
 {
- "version": 9,
- "updated": "2026-11-19",
+ "version": 10,
+ "updated": "2026-11-23",
  "parties": [
   {
    "id": "PP",
@@ -665,7 +665,9 @@
   "UPC": "https://cdn.rtvc.es/archivos/2026/11/Programa-electoral-UPC.pdf",
   "EXI": "https://teruelexiste.info/wp-content/uploads/2026/11/Programa_Teruel_Existe_Completo_29N.pdf",
   "SYA": "https://soriaya.org/wp-content/uploads/2026/11/ProgramaGenerales_26.pdf",
-  "IE": "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf"
+  "IE": "https://iustitiaeuropa.es/img/bloques/documentos/descarga-aqui-tu-contrato-00030.pdf",
+  "JXC": "https://www.tualcentre.cat/app/uploads/2026/11/PROGRAMA-ELECTORAL_JUNTS_29N.pdf",
+  "ARA": "https://media.timtul.com/media/web_mespermallorca/ProgramaElectoral29N_Corregit%20(1)_20261117173133.pdf"
  },
  "programPages": {
   "PP": "https://www.pp.es",
@@ -690,6 +692,7 @@
   "SYA": "https://soriaya.org",
   "PFAC": "https://feministasalcongreso.es",
   "EXI": "https://teruelexiste.info",
+  "ARA": "https://aramesfrontampli.cat",
   "FA": "https://frenteamplio.info"
  },
  "mlKw": {
